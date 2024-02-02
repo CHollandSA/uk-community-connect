@@ -1,0 +1,24 @@
+/* CitizenshipTestSection.module.css */
+
+.citizenship {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .left-side {
+    width: 50%;
+    padding-right: 20px;
+  }
+  
+  .right-side {
+    width: 50%;
+    text-align: right;
+  }
+  
+  .link-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
