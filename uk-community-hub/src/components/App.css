@@ -1,7 +1,44 @@
 .logo {
-  width: 120px;
+  max-width: 120px;
   height: 120px;
   padding: 10px;
+  align-self: flex-end;
+}
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; 
+}
+
+.container2 {
+  margin-top: 10px; /* Add spacing between container1 and container2 */
+  /* Your existing styles for container2 */
+}
+.nav-list li {
+  margin-bottom: 10px; /* Add spacing between navigation items */
+}
+
+.btn {
+  margin-top: 10px; /* Add spacing between buttons */
+}
+
+.showButtons{
+  align-self: flex-end;
+  padding-right: 10px;
+
+}
+
+.oppositeEndsLine {
+  display: flex;
+  justify-content: space-between;
 }
 
 .user-icon{
@@ -15,11 +52,12 @@
 
 .logo-container {
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   flex: 1;
   align-self: center;
 }
+
 
 .header-content {
   display: flex;
@@ -32,13 +70,7 @@
   width: 100%;
 }
 
-.nav-list {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0; 
-  align-items: center;
-}
+
 
 .nav-list li {
   margin-right: 20px;

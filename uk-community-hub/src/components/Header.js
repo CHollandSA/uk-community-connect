@@ -9,6 +9,14 @@ const Header = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [userName, setUserName] = useState('');
+  const [showButtons, setShowButtons] = useState(false);
+
+  const toggleButtons = () => {
+    setShowButtons(!showButtons);
+    // Close login and signup forms when toggling buttons
+    setShowLogin(false);
+    setShowSignUp(false);
+  };
 
   const handleLogin = async (username, password) => {
     try {
@@ -23,10 +31,8 @@ const Header = () => {
       const data = await response.json();
 
       if (data.success) {
-        console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName} !`);
-        // Set the username in state
+        console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName}!`);
         setUserName(data.user.username);
-        // Store the username in local storage
         localStorage.setItem('userName', data.user.username);
       } else {
         console.log('User not found');
@@ -45,51 +51,67 @@ const Header = () => {
         },
         body: JSON.stringify({ name, surname, username, email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         console.log('Successfully signed up!');
         setShowSignUp(false);
-        return true; // Indicate success to the Signup component
+        return true;
       } else {
         console.log('Error signing up:', data.error);
-        return false; // Indicate failure to the Signup component
+        return false;
       }
     } catch (error) {
       console.error('Error making API call:', error);
-      return false; // Indicate failure to the Signup component
+      return false;
     }
   };
-  
-  
-  
 
   return (
     <header className='header'>
-      <div className='navyHi'>
-      <div className='logo-container'>
+      <div className="oppositeEndsLine">
         <img src="\images\UKCCLogo.png" alt="UKCC" className='logo' />
+        <div className='showButtons'>
+          {showButtons ? (
+            <img
+              className="close"
+              src="\images\close.png"
+              onClick={toggleButtons}
+              alt="menu"
+            />
+          ) : (
+            <img
+              className="burger"
+              src="\images\hamburger.png"
+              onClick={toggleButtons}
+              alt="menu"
+            />
+          )}
+          {userName && <p className='user-name'>{userName}</p>}
+        </div>
       </div>
+
       <div className='header-content'>
-        <nav>
-          <ul className='nav-list'>
-            <li><a href="/info">Info</a></li>
-            <li><a href="/test">Test</a></li>
-            <li><a href="/volunteering">Volunteering</a></li>
-            <li><a href="/admin">Admin</a></li>
-          </ul>
-        </nav>
-
-  <div>
-  <img src="\images\login.png" alt="User" className='user-icon' />
-  {userName && <p className='user-name'>{userName}</p>}
-  <button className='btn btn-primary' onClick={() => {setShowLogin(true); setShowSignUp(false);}}>Login</button>
-  <button className='btn btn-secondary' onClick={() => {setShowSignUp(true); setShowLogin(false);}}>Sign Up</button>
-  </div>
-
+        {showButtons && (
+          <div className='container'>
+            <nav>
+              <ul className='nav-list'>
+                <li><a href="/info">Info</a></li>
+                <li><a href="/test">Test</a></li>
+                <li><a href="/volunteering">Volunteering</a></li>
+                <li><a href="/admin">Admin</a></li>
+              </ul>
+            </nav>
+            <div className='container2'>
+            <button className='btn btn-primary' onClick={() => { setShowLogin(true); setShowSignUp(false); }}>Login</button>
+            <button className='btn btn-secondary' onClick={() => { setShowSignUp(true); setShowLogin(false); }}>Sign Up</button>
+            </div>
+          </div>
+        )}
       </div>
       <hr className='header-line' />
+
       {showLogin && (
         <div>
           <Login handleLogin={handleLogin} setShowLogin={setShowLogin} />
@@ -102,7 +124,6 @@ const Header = () => {
           <hr className='header-line' />
         </div>
       )}
-      </div>
     </header>
   );
 };
