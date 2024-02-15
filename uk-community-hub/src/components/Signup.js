@@ -7,28 +7,31 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
+  const [isOrganization, setIsOrganization] = useState(false); // State for checkbox
+  const [companyName, setCompanyName] = useState(''); // State for company name
   const [error, setError] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!name || !surname || !username || !email || !password || !repeatPassword) {
-        setError('All fields are required');
-        return;
-      }
-    
-      if (password !== repeatPassword) {
-        setError('Passwords do not match');
-        return;
-      }
+      setError('All fields are required');
+      return;
+    }
 
     if (password !== repeatPassword) {
       setError('Passwords do not match');
       return;
     }
 
+    // Additional validation for company name if signing up as an organization
+    if (isOrganization && !companyName) {
+      setError('Please provide the company name');
+      return;
+    }
+
     // Call the handleSignUp function passed from the parent
-    const success = await handleSignUp(name, surname, username, email, password);
+    const success = await handleSignUp(name, surname, username, email, password, companyName);
 
     if (success) {
       setShowSignUp(false);
@@ -64,8 +67,20 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
         <label htmlFor='repeatPassword'>Repeat Password</label>
         <input type='password' className='form-control' id='repeatPassword' value={repeatPassword} onChange={(event) => setRepeatPassword(event.target.value)} />
       </div>
-      <button type='submit' className='btn btn-primary'>Signup</button>
-      <button type='button' className='btn btn-secondary' onClick={() => setShowSignUp(false)}>Close</button>
+      <div className='form-group'>
+        <input type='checkbox' id='isOrganization' checked={isOrganization} onChange={(event) => setIsOrganization(event.target.checked)} />
+        <label htmlFor='isOrganization'>Are you signing up as part of an organization?</label>
+      </div>
+      {isOrganization && (
+        <div className='form-group'>
+          <label htmlFor='companyName'>Company Name</label>
+          <input type='text' className='form-control' id='companyName' value={companyName} onChange={(event) => setCompanyName(event.target.value)} />
+        </div>
+      )}
+      <div className='btnLogin'>
+        <button type='submit' className='btn btn-primary'>Signup</button>
+        <button type='button' className='btn btn-secondary' onClick={() => setShowSignUp(false)}>Close</button>
+      </div>
     </form>
   );
 };

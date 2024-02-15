@@ -1,5 +1,7 @@
 import React from 'react';
 import './Citizenship.css';
+import './App.css';
+
 
 //currently trying to add a padding of 10px to everything so it looks neater s
 

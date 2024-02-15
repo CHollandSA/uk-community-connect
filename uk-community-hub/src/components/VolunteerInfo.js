@@ -4,72 +4,67 @@ import axios from 'axios';
 import VolunteerSignUp from "./VolunteerSignUp";
 
 const VolunteerList = () => {
-  const [volunteerSessions, setVolunteerSessions] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [userName, setUserName] = useState(''); // Add state for the user name
+  const [showIndividualForm, setShowIndividualForm] = useState(false);
+  const [showOrganizationForm, setShowOrganizationForm] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [organizationOptions, setOrganizationOptions] = useState([]);
 
   useEffect(() => {
-    fetchVolunteers();
-    // Check if the user is already logged in when the component mounts
     const storedUserName = localStorage.getItem('userName');
     if (storedUserName) {
       setUserName(storedUserName);
     }
   }, []);
 
-  const fetchVolunteers = async () => {
+
+
+  const showOrganizationOptions = async () => {
     try {
-      const response = await axios.get('http://localhost:8081/volunteers');
-      setVolunteerSessions(response.data);
+      const response = await axios.get('http://localhost:8081/organizations');
+      setOrganizationOptions(response.data);
+      setShowOrganizationForm(true);
+      setShowIndividualForm(false);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className='volunteer'>
+    <div className='volunteering'>
       <h2>Volunteer Sessions</h2>
 
-      {userName && ( // Show the button only if the user is logged in
-        <div>
-          <button onClick={() => setShowForm(true)}>Volunteer</button>
+      {userName && (
+        <div className='volunteerBtns'>
+          <button className='btn btn-primary' onClick={() => setShowIndividualForm(true)}>Volunteer as Individual</button>
+          <button className='btn btn-secondary' onClick={showOrganizationOptions}>Volunteer with Organization</button>
         </div>
       )}
 
-      {showForm && <VolunteerSignUp setShowForm={setShowForm} />}
+      {showIndividualForm && <VolunteerSignUp setShowForm={setShowIndividualForm} />}
 
-      <div className='table-wrapper-scroll-y'>
-        {volunteerSessions.length === 0 ? (
-          <p>No volunteers available.</p>
-        ) : (
-          <table className='table'>
+      {showOrganizationForm && (
+        <div>
+          <h3>Choose an Organization:</h3>
+          <table>
             <thead>
               <tr>
-                <th>Session</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Max Participants</th>
-                <th>Book</th>
+                <th>Company Name</th>
+                {/* Add other headings as needed */}
               </tr>
             </thead>
             <tbody>
-              {volunteerSessions.map((session) => (
-                <tr key={session.SessionID}>
-                  <td>{session.SessionName}</td>
-                  <td>
-                    {new Date(session.Date).toLocaleDateString('en-GB')}
-                  </td>
-                  <td>{session.Time}</td>
-                  <td>{session.MaxParticipants}</td>
-                  <td>
-                    <input type="checkbox" />
-                  </td>
+              {organizationOptions.map((org) => (
+                <tr key={org.id}>
+                  <td>{org.companyName}</td>
+                  {/* Add other cells with organization data */}
                 </tr>
               ))}
             </tbody>
           </table>
-        )}
-      </div>
+        </div>
+      )}
+
+     
     </div>
   );
 };

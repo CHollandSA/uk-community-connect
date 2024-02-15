@@ -1,0 +1,17 @@
+.volunteering{
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+
+}
+
+.btn-primary{
+        background-color: navy ;
+        border-color: navy;
+        margin-right: 5px;
+}
+
+.btn-secondary{
+        background-color: white;
+        color: black;
+}

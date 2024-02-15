@@ -1,5 +1,5 @@
-// VolunteerSignUp.js
 import React, { useState } from 'react';
+import './App.css';
 
 function VolunteerSignUp({ setShowForm }) {
   const [sessionName, setSessionName] = useState('');

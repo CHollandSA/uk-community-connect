@@ -35,7 +35,8 @@ const Login = ({ handleLogin, setShowLogin }) => {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
-        <button type='submit' className='btn btn-primary'>
+        <div className='btnLogin'>        
+          <button type='submit' className='btn btn-primary'>
           Login
         </button>
         <button
@@ -45,6 +46,7 @@ const Login = ({ handleLogin, setShowLogin }) => {
         >
           Close
         </button>
+        </div>
       </form>
     );
   };

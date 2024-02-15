@@ -1,0 +1,107 @@
+.logo {
+    max-width: 120px;
+    height: 120px;
+    padding: 10px;
+    align-self: flex-end;
+  }
+
+  .title{
+    align-self: center;
+  }
+  
+  
+  .user-name{
+    color: white;
+  }
+  
+  .nav-list {
+    color: white;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    font-size: larger;
+  }
+  .form-group{
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+  
+  .btnLogin{
+    padding-left: 10px;
+  }
+
+
+  
+  .container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; 
+  }
+  
+  .container2 {
+    margin-top: 10px;
+  }
+  .nav-list li {
+    margin-bottom: 10px; /* Add spacing between navigation items */
+  }
+  
+  .btn {
+    margin-top: 10px; /* Add spacing between buttons */
+  }
+  
+  .showButtons{
+    align-self: flex-end;
+    padding-right: 10px;
+  
+  }
+  
+  .oppositeEndsLine {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .user-icon{
+   width: 40px;
+   height: 40px;
+  }
+  
+  .volunteer{
+    padding:10px;
+  }
+  
+  .logo-container {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    flex: 1;
+    align-self: center;
+  }
+  
+  .header{
+    background-color:cornflowerblue;
+  }
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .header-line {
+    width: 100%;
+  }
+  
+  
+  
+  .nav-list li {
+    margin-right: 20px;
+  }
+  
+  .nav-list a {
+    text-decoration: none;
+    color: white;
+  }
+  
