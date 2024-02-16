@@ -25,9 +25,28 @@ db.connect((err) => {
 });
 
 
+app.get('/users/:username', (req, res) => {
+  const { username } = req.params;
+
+  const sql = 'SELECT id FROM users WHERE UserName = ?';
+  db.query(sql, [username], (err, data) => {
+    if (err) {
+      console.error('Error executing SELECT query:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (data.length > 0) {
+      const userId = data[0].id;
+      return res.status(200).json({ id: userId });
+    } else {
+      return res.status(404).json({ error: 'User not found' });
+    }
+  });
+});
+
 
 app.post('/signup', (req, res) => {
-  const { name, surname, email, password, username } = req.body;
+  const { name, surname, email, password, username, companyName } = req.body;
 
   // Check if the username or email already exists
   const checkUserQuery = 'SELECT COUNT(*) AS count FROM users WHERE UserName = ? OR Email = ?';
@@ -44,19 +63,22 @@ app.post('/signup', (req, res) => {
     }
 
     // Insert the new user
-    const insertUserQuery = 'INSERT INTO users (FirstName, LastName, Email, Password, UserName) VALUES (?, ?, ?, ?, ?)';
-    db.query(insertUserQuery, [name, surname, email, password, username], (insertErr, insertResult) => {
+    const insertUserQuery = 'INSERT INTO users (FirstName, LastName, Email, Password, UserName, Company, CompanyName) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    // If user isOrganization is true, set Company column to true and insert the company name
+    const isOrganization = req.body.isOrganization === 'true';
+    db.query(insertUserQuery, [name, surname, email, password, username, isOrganization, isOrganization ? companyName : null], (insertErr, insertResult) => {
       if (insertErr) {
         console.error('Error executing INSERT query:', insertErr);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
 
-      console.log(insertResult);
       console.log('User inserted successfully');
       return res.status(200).json({ message: 'User inserted successfully' });
     });
   });
 });
+
+
 
 
 app.post('/login', (req, res) => {
@@ -73,6 +95,7 @@ app.post('/login', (req, res) => {
       return res.status(200).json({
         success: true,
         user: {// this is creating a user from the data found and sending it to the front end 
+          userID: data[0].UserID,
           username: data[0].UserName,
           firstName: data[0].FirstName,
           lastName: data[0].LastName,
@@ -87,10 +110,11 @@ app.post('/login', (req, res) => {
 
 
 app.post('/volunteers', (req, res) => {
-  const { name, email, skills } = req.body;
+  const { sessionName, location, date, time, duration, maxParticipants, experience } = req.body;
+  const organizerId = req.headers['user-id']; // Retrieve userId from headers
 
-  const sql = 'INSERT INTO volunteers (name, email, skills) VALUES (?, ?, ?)';
-  db.query(sql, [name, email, skills], (err, result) => {
+  const sql = 'INSERT INTO VolunteerSessions (SessionName, Location, Date, Time, Duration, MaxParticipants, OrganizerID, Experience, MaxVolunteers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  db.query(sql, [sessionName, location, date, time, duration, maxParticipants, organizerId, experience, maxParticipants], (err, result) => {
     if (err) {
       console.error('Error executing INSERT query:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -100,6 +124,7 @@ app.post('/volunteers', (req, res) => {
     return res.status(200).json({ message: 'Data inserted successfully' });
   });
 });
+
 
 app.get('/volunteers', (req, res) => {
   const sql = 'SELECT * FROM VolunteerSessions';

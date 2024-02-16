@@ -3,6 +3,7 @@ import './Hero.css';
 import './Header.css';
 import Login from './Login';
 import Signup from './Signup';
+import VolunteerSignUp from './VolunteerSignUp';
 
 const Header = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -30,9 +31,9 @@ const Header = () => {
       const data = await response.json();
 
       if (data.success) {
-        console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName}!`);
+        console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName} !`);
         setUserName(data.user.username);
-        localStorage.setItem('userName', data.user.username);
+        localStorage.setItem('userId', data.user.userID);
       } else {
         console.log('User not found');
       }
@@ -40,32 +41,38 @@ const Header = () => {
       console.error('Error making API call:', error);
     }
   };
-
-  const handleSignUp = async (name, surname, username, email, password) => {
+  const handleSignUp = async (name, surname, username, email, password, isOrganization, companyName) => {
     try {
       const response = await fetch('http://localhost:8081/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, surname, username, email, password }),
+        body: JSON.stringify({
+          name,
+          surname,
+          username,
+          email,
+          password,
+          isOrganization: String(isOrganization), // Convert to string for consistency
+          companyName,
+        }),
       });
-
+  
       const data = await response.json();
-
       if (response.ok) {
-        console.log('Successfully signed up!');
-        setShowSignUp(false);
+        console.log(data.message);
         return true;
       } else {
-        console.log('Error signing up:', data.error);
+        console.error(data.error);
         return false;
       }
     } catch (error) {
-      console.error('Error making API call:', error);
+      console.error('Error signing up:', error);
       return false;
     }
   };
+  
 
   return (
     <header className='header'>
@@ -119,11 +126,12 @@ const Header = () => {
         </div>
       )}
       {showSignUp && (
-        <div>
-          <Signup handleSignUp={handleSignUp} setShowSignUp={setShowSignUp} />
-          <hr className='header-line' />
-        </div>
-      )}
+    <div>
+      <Signup handleSignUp={handleSignUp} setShowSignUp={setShowSignUp} />
+     <VolunteerSignUp userName= {localStorage.getItem('userName')} setShowForm={setShowSignUp} />
+     <hr className='header-line' />
+   </div>
+)}
     </header>
   );
 };

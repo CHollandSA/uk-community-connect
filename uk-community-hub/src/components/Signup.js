@@ -31,7 +31,7 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
     }
 
     // Call the handleSignUp function passed from the parent
-    const success = await handleSignUp(name, surname, username, email, password, companyName);
+    const success = await handleSignUp(name, surname, username, email, password, isOrganization, companyName);
 
     if (success) {
       setShowSignUp(false);

@@ -10,18 +10,38 @@ function VolunteerSignUp({ setShowForm }) {
   const [maxParticipants, setMaxParticipants] = useState('');
   const [experience, setExperience] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      sessionName,
-      location,
-      date,
-      time,
-      duration,
-      maxParticipants,
-      experience,
-    });
-    setShowForm(false);
+    const userId = localStorage.getItem('userId');
+
+    try {
+      const response = await fetch('http://localhost:8081/volunteers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'user-id': userId, // Pass userId in the headers
+        },
+        body: JSON.stringify({
+          sessionName,
+          location,
+          date,
+          time,
+          duration,
+          maxParticipants,
+          experience,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log(data.message);
+        setShowForm(false);
+      } else {
+        console.error(data.error);
+      }
+    } catch (error) {
+      console.error('Error submitting data:', error);
+    }
   };
 
   return (
