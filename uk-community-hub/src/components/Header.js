@@ -77,7 +77,7 @@ const Header = () => {
   return (
     <header className='header'>
       <div className="oppositeEndsLine">
-        <img src="\images\UKCCLogo.png" alt="UKCC" className='logo' />
+      <img src="/images/UKCCLogo.png" alt="UKCC" className='logo' />
         <h1 className='title'>UK Community Connect</h1>
         <div className='showButtons'>
           {showButtons ? (
