@@ -51,11 +51,14 @@
     margin-top: 10px; /* Add spacing between buttons */
   }
   
-  .showButtons{
+  .showButtons {
     align-self: flex-end;
     padding-right: 10px;
-  
+    text-align: right;
+    white-space: nowrap;
   }
+  
+  
   
   .oppositeEndsLine {
     display: flex;

@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Hero.css';
 import './Header.css';
 import Login from './Login';
 import Signup from './Signup';
-import VolunteerSignUp from './VolunteerSignUp';
 
 const Header = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [userName, setUserName] = useState('');
   const [showButtons, setShowButtons] = useState(false);
+
+  useEffect(() => {
+    // Set username from local storage when component mounts
+    const storedUserName = localStorage.getItem('username');
+    if (storedUserName) {
+      setUserName(storedUserName);
+    }
+  }, []);
 
   const toggleButtons = () => {
     setShowButtons(!showButtons);
@@ -33,7 +40,8 @@ const Header = () => {
       if (data.success) {
         console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName} !`);
         setUserName(data.user.username);
-        localStorage.setItem('userId', data.user.userID);
+        localStorage.setItem('username', data.user.username);
+        localStorage.setItem('userId',data.user.userID)
       } else {
         console.log('User not found');
       }
@@ -41,6 +49,7 @@ const Header = () => {
       console.error('Error making API call:', error);
     }
   };
+
   const handleSignUp = async (name, surname, username, email, password, isOrganization, companyName) => {
     try {
       const response = await fetch('http://localhost:8081/signup', {
@@ -72,12 +81,18 @@ const Header = () => {
       return false;
     }
   };
-  
+
+  const handleLogout = () => {
+    // Clear username from local storage when logging out
+    localStorage.removeItem('username');
+    localStorage.removeItem('userId');
+    setUserName('');
+  };
 
   return (
     <header className='header'>
       <div className="oppositeEndsLine">
-      <img src="/images/UKCCLogo.png" alt="UKCC" className='logo' />
+        <img src="/images/UKCCLogo.png" alt="UKCC" className='logo' />
         <h1 className='title'>UK Community Connect</h1>
         <div className='showButtons'>
           {showButtons ? (
@@ -111,8 +126,14 @@ const Header = () => {
               </ul>
             </nav>
             <div className='container2'>
-            <button className='btn btn-primary' onClick={() => { setShowLogin(true); setShowSignUp(false); }}>Login</button>
-            <button className='btn btn-secondary' onClick={() => { setShowSignUp(true); setShowLogin(false); }}>Sign Up</button>
+              {!userName ? (
+                <>
+                  <button className='btn btn-primary' onClick={() => { setShowLogin(true); setShowSignUp(false); }}>Login</button>
+                  <button className='btn btn-secondary' onClick={() => { setShowSignUp(true); setShowLogin(false); }}>Sign Up</button>
+                </>
+              ) : (
+                <button className='btn btn-secondary' onClick={handleLogout}>Logout</button>
+              )}
             </div>
           </div>
         )}
@@ -126,12 +147,11 @@ const Header = () => {
         </div>
       )}
       {showSignUp && (
-    <div>
-      <Signup handleSignUp={handleSignUp} setShowSignUp={setShowSignUp} />
-     <VolunteerSignUp userName= {localStorage.getItem('userName')} setShowForm={setShowSignUp} />
-     <hr className='header-line' />
-   </div>
-)}
+        <div>
+          <Signup handleSignUp={handleSignUp} setShowSignUp={setShowSignUp} />
+          <hr className='header-line' />
+        </div>
+      )}
     </header>
   );
 };
