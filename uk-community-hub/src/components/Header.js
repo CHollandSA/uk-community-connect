@@ -41,7 +41,9 @@ const Header = () => {
         console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName} !`);
         setUserName(data.user.username);
         localStorage.setItem('username', data.user.username);
-        localStorage.setItem('userId',data.user.userID)
+        localStorage.setItem('userId', data.user.userID);
+        // Reload the page after login
+        window.location.reload();
       } else {
         console.log('User not found');
       }
@@ -87,6 +89,8 @@ const Header = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('userId');
     setUserName('');
+    // Reload the page after logout
+    window.location.reload();
   };
 
   return (
