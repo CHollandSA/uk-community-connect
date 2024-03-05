@@ -99,6 +99,7 @@ app.post('/login', (req, res) => {
           username: data[0].UserName,
           firstName: data[0].FirstName,
           lastName: data[0].LastName,
+          company: data[0].Company
         },
       });
     } else {

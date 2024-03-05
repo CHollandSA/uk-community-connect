@@ -34,7 +34,7 @@ const Booking = () => {
                             <th>Date</th>
                             <th>Time</th>
                             <th>Max Participants</th>
-                            {isLoggedIn && <th>Book</th>} {/* Conditionally render "Book" column if logged in */}
+                            {isLoggedIn && <th>Book</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -44,7 +44,7 @@ const Booking = () => {
                                 <td>{new Date(session.Date).toLocaleDateString('en-GB')}</td>
                                 <td>{session.Time}</td>
                                 <td>{session.MaxParticipants}</td>
-                                {isLoggedIn && <td><input type="checkbox" /></td>} {/* Conditionally render checkbox if logged in */}
+                                {isLoggedIn && <td><input type="checkbox" /></td>}
                             </tr>
                         ))}
                     </tbody>

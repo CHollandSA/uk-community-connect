@@ -38,12 +38,20 @@ const Header = () => {
       const data = await response.json();
 
       if (data.success) {
-        console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName} !`);
+        console.log(`Welcome back, ${data.user.firstName} ${data.user.lastName} ${data.user.company}!`);
         setUserName(data.user.username);
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('userId', data.user.userID);
+        
+        // Check if the logged-in user is an organization
+        if (data.user.company === 1) { // Use the correct property name here
+          localStorage.setItem('organization', '1'); // Set organization to '1' if organizerid is '1'
+        } else {
+          localStorage.setItem('organization', '0'); // Otherwise, set organization to '0'
+        }
+        
         // Reload the page after login
-        window.location.reload();
+         window.location.reload();
       } else {
         console.log('User not found');
       }
@@ -51,6 +59,7 @@ const Header = () => {
       console.error('Error making API call:', error);
     }
   };
+
 
   const handleSignUp = async (name, surname, username, email, password, isOrganization, companyName) => {
     try {
@@ -88,6 +97,7 @@ const Header = () => {
     // Clear username from local storage when logging out
     localStorage.removeItem('username');
     localStorage.removeItem('userId');
+    localStorage.removeItem('organization'); // Remove organization from local storage
     setUserName('');
     // Reload the page after logout
     window.location.reload();
@@ -126,7 +136,7 @@ const Header = () => {
                 <li><a href="/info">Info</a></li>
                 <li><a href="/test">Test</a></li>
                 <li><a href="/volunteering">Volunteering</a></li>
-                <li><a href="/admin">Admin</a></li>
+                <li><a href="/volunteering">Book</a></li>
               </ul>
             </nav>
             <div className='container2'>

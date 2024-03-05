@@ -1,70 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Volunteering.css';
-import axios from 'axios';
 import VolunteerSignUp from "./VolunteerSignUp";
 
 const VolunteerList = () => {
   const [showIndividualForm, setShowIndividualForm] = useState(false);
   const [showOrganizationForm, setShowOrganizationForm] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [organizationOptions, setOrganizationOptions] = useState([]);
-
-  useEffect(() => {
-    const storedUserName = localStorage.getItem('userName');
-    if (storedUserName) {
-      setUserName(storedUserName);
-    }
-  }, []);
 
 
+  const showOrganizationOptions = () => {
+    setShowOrganizationForm(true); // Show the organization form directly
+    setShowIndividualForm(false);
+  };
 
-  const showOrganizationOptions = async () => {
-    try {
-      const response = await axios.get('http://localhost:8081/organizations');
-      setOrganizationOptions(response.data);
-      setShowOrganizationForm(true);
-      setShowIndividualForm(false);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleCloseForm = () => {
+    setShowOrganizationForm(false);
   };
 
   return (
     <div className='volunteering'>
-      <h2>Volunteer Sessions</h2>
-
-      {userName && (
         <div className='volunteerBtns'>
-          <button className='btn btn-primary' onClick={() => setShowIndividualForm(true)}>Volunteer as Individual</button>
-          <button className='btn btn-secondary' onClick={showOrganizationOptions}>Volunteer with Organization</button>
+                <h2>Volunteer Sessions</h2>
+          <button className='btn btn-primary' onClick={() => { setShowIndividualForm(true); setShowOrganizationForm(false); }}>Volunteer as Individual</button>
+          <button className='btn btn-primary' onClick={showOrganizationOptions}>Volunteer with Organization</button>
         </div>
-      )}
 
       {showIndividualForm && <VolunteerSignUp setShowForm={setShowIndividualForm} />}
 
       {showOrganizationForm && (
         <div>
           <h3>Choose an Organization:</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Company Name</th>
-                {/* Add other headings as needed */}
-              </tr>
-            </thead>
-            <tbody>
-              {organizationOptions.map((org) => (
-                <tr key={org.id}>
-                  <td>{org.companyName}</td>
-                  {/* Add other cells with organization data */}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* Add your organization selection form here */}
+          <button className='btn btn-danger' onClick={handleCloseForm}>Close</button>
         </div>
       )}
-
-     
     </div>
   );
 };
