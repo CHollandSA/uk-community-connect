@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Volunteering.css";
 import VolunteerSignUp from "./VolunteerSignUp";
+import { OverlayTrigger, Popover } from "react-bootstrap";
 
 const VolunteerList = () => {
   const [showIndividualForm, setShowIndividualForm] = useState(false);
@@ -15,10 +16,29 @@ const VolunteerList = () => {
     setShowOrganizationForm(false);
   };
 
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Header as="h3">Information</Popover.Header>
+      <Popover.Body>
+        Throughtout this site you will see info icons like me. Click them to
+        learn more about the section you are on{" "}
+      </Popover.Body>
+    </Popover>
+  );
+
   return (
     <div className="volunteering">
       <div className="volunteerBtns">
-        <h2>Volunteer Sessions</h2>
+        <div className="div-heading">
+          <h2>Volunteer Services</h2>{" "}
+          <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+            <img
+              src="/images/info-circle-line-icon.png"
+              alt="Info"
+              className="info-icon"
+            />
+          </OverlayTrigger>
+        </div>
         <button
           className="btn btn-primary"
           onClick={() => {

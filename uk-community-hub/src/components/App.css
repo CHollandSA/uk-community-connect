@@ -17,3 +17,14 @@
   margin-top: 0;
   max-width: 70%;
 }
+
+.div-heading {
+  display: flex;
+  align-items: center;
+}
+
+.info-icon{
+  align-self: flex-start;
+  width: 30px;
+}
+
