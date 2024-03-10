@@ -7,11 +7,13 @@ import Extra from "../components/Extra";
 import Footer from "../components/Footer";
 import Booking from "../components/Booking";
 import Organization from "../components/Organization";
+import Admin from "../components/Admin";
 import "../components/App.css";
 
 const Home = () => {
   const isOrganization = localStorage.getItem("organization") === "1";
   const isLoggedIn = localStorage.getItem("username") !== null;
+  const isAdmin = localStorage.getItem("username") === "admin";
 
   return (
     <div
@@ -21,12 +23,13 @@ const Home = () => {
       }}
     >
       <Header />
-      <HeroSection />
-      <CitizenshipTestSection />
+      {isAdmin && <Admin />}
+      {!isAdmin && <HeroSection />}
+      {!isAdmin && <CitizenshipTestSection />}
       {isOrganization && <Organization />}
-      {isLoggedIn && <VolunteerInfo />}
-      <Booking />
-      <Extra />
+      {!isAdmin && isLoggedIn && <VolunteerInfo />}
+      {!isAdmin && <Booking />}
+      {!isAdmin && <Extra />}
       <Footer />
     </div>
   );

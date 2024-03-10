@@ -5,18 +5,12 @@ const Footer = () => {
     <div>
       <hr className="header-line" />
       <nav>
-        <ul className="nav-list">
+        <ul className="nav-list2">
           <li>
-            <a href="/info">Info</a>
+            <p>© 2024 UKCC. All rights reserved. |</p>
           </li>
           <li>
-            <a href="/test">Test</a>
-          </li>
-          <li>
-            <a href="/volunteering">Volunteering</a>
-          </li>
-          <li>
-            <a href="/admin">Admin</a>
+            <a href="/privacy">Privacy Policy</a>
           </li>
         </ul>
       </nav>

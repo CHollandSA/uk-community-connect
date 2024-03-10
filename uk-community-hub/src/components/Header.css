@@ -31,6 +31,24 @@
     padding-left: 10px;
   }
 
+  .nav-list2 {
+    color: black;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+  }
+
+  .nav-list2 a{
+    margin-right: 20px;
+    margin-left: 20px;
+    color: black;
+  }
+
+  .nav-list2 p{
+    margin-right: 20px;
+    margin-left: 20px;
+  }
 
   
   .container{
