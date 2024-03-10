@@ -88,34 +88,46 @@ const Booking = () => {
       </div>
       {isLoggedIn && (
         <>
-          <h4>Booked Sessions</h4>
+          <h4 className="booking-sub">Booked Sessions</h4>
           {userSessions.length > 0 ? (
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th>Session</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {userSessions.map((session) => (
-                  <tr key={session.SessionID}>
-                    <td>{session.SessionName}</td>
-                    <td>
-                      {new Date(session.Date).toLocaleDateString("en-GB")}
-                    </td>
-                    <td>{session.Time}</td>
+            <>
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Session</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Remove</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {userSessions.map((session) => (
+                    <tr key={session.SessionID}>
+                      <td>{session.SessionName}</td>
+                      <td>
+                        {new Date(session.Date).toLocaleDateString("en-GB")}
+                      </td>
+                      <td>{session.Time}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          onChange={() =>
+                            handleCheckboxChange(session.SessionID)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button className="btn btn-danger">Cancel</button>
+            </>
           ) : (
             <p>No sessions linked to the user</p>
           )}
         </>
       )}
-      <h4>Available Sessions</h4>
+      <h4 className="booking-sub">Available Sessions</h4>
       <div className="table-responsive">
         <table className="table table-striped">
           <thead>
