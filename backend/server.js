@@ -194,6 +194,25 @@ app.post("/session-signup", (req, res) => {
   });
 });
 
+app.get("/booked-sessions/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const sql = `
+    SELECT VolunteerSessions.SessionID, SessionName, Date, Time
+    FROM SessionSignups
+    INNER JOIN VolunteerSessions ON SessionSignups.SessionID = VolunteerSessions.SessionID
+    WHERE UserID = ?
+  `;
+  db.query(sql, [userId], (err, data) => {
+    if (err) {
+      console.error("Error executing SELECT query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    return res.status(200).json(data);
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
 });

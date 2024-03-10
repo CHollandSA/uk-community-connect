@@ -8,6 +8,7 @@ const Booking = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedSessionIds, setSelectedSessionIds] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [userSessions, setUserSessions] = useState([]);
 
   const popover = (
     <Popover id="popover-basic">
@@ -20,17 +21,30 @@ const Booking = () => {
   );
 
   useEffect(() => {
-    fetchVolunteers();
-    // Check if user is logged in
     const userId = localStorage.getItem("userId");
-    setIsLoggedIn(!!userId); // Set isLoggedIn to true if userId exists
-    setUserId(userId); // Set userId state
+    setUserId(userId);
+    setIsLoggedIn(!!userId);
+    fetchVolunteers(userId);
+    fetchUserSessions(userId);
   }, []);
 
-  const fetchVolunteers = async () => {
+  const fetchVolunteers = async (userId) => {
     try {
-      const response = await axios.get("http://localhost:8081/volunteers");
+      const response = await axios.get(
+        `http://localhost:8081/volunteers/${userId}`
+      );
       setVolunteerSessions(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUserSessions = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8081/booked-sessions/${userId}`
+      );
+      setUserSessions(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +52,6 @@ const Booking = () => {
 
   const handleBookSession = async () => {
     try {
-      // Iterate through selectedSessionIds and send a POST request to insert data into SessionSignups table
       for (const sessionId of selectedSessionIds) {
         await axios.post("http://localhost:8081/session-signup", {
           sessionId,
@@ -46,15 +59,14 @@ const Booking = () => {
         });
       }
       console.log("Sessions booked successfully");
-      // Clear selectedSessionIds after booking
       setSelectedSessionIds([]);
+      fetchVolunteers(userId); // Refresh the sessions after booking
     } catch (error) {
       console.error("Error booking sessions:", error);
     }
   };
 
   const handleCheckboxChange = (sessionId) => {
-    // Toggle the selected session ID in the state
     setSelectedSessionIds((prevIds) =>
       prevIds.includes(sessionId)
         ? prevIds.filter((id) => id !== sessionId)
@@ -74,7 +86,36 @@ const Booking = () => {
           />
         </OverlayTrigger>
       </div>
-      <p>This section is used for booking sessions.</p>
+      {isLoggedIn && (
+        <>
+          <h4>Booked Sessions</h4>
+          {userSessions.length > 0 ? (
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Session</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userSessions.map((session) => (
+                  <tr key={session.SessionID}>
+                    <td>{session.SessionName}</td>
+                    <td>
+                      {new Date(session.Date).toLocaleDateString("en-GB")}
+                    </td>
+                    <td>{session.Time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No sessions linked to the user</p>
+          )}
+        </>
+      )}
+      <h4>Available Sessions</h4>
       <div className="table-responsive">
         <table className="table table-striped">
           <thead>
