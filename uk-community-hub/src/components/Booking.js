@@ -6,12 +6,14 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 const Booking = () => {
   const [volunteerSessions, setVolunteerSessions] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedSessionIds, setSelectedSessionIds] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   const popover = (
     <Popover id="popover-basic">
       <Popover.Header as="h3">Information</Popover.Header>
       <Popover.Body>
-        Throughtout this site you will see info icons like me. Click them to
+        Throughout this site you will see info icons like me. Click them to
         learn more about the section you are on{" "}
       </Popover.Body>
     </Popover>
@@ -22,6 +24,7 @@ const Booking = () => {
     // Check if user is logged in
     const userId = localStorage.getItem("userId");
     setIsLoggedIn(!!userId); // Set isLoggedIn to true if userId exists
+    setUserId(userId); // Set userId state
   }, []);
 
   const fetchVolunteers = async () => {
@@ -31,6 +34,32 @@ const Booking = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleBookSession = async () => {
+    try {
+      // Iterate through selectedSessionIds and send a POST request to insert data into SessionSignups table
+      for (const sessionId of selectedSessionIds) {
+        await axios.post("http://localhost:8081/session-signup", {
+          sessionId,
+          userId,
+        });
+      }
+      console.log("Sessions booked successfully");
+      // Clear selectedSessionIds after booking
+      setSelectedSessionIds([]);
+    } catch (error) {
+      console.error("Error booking sessions:", error);
+    }
+  };
+
+  const handleCheckboxChange = (sessionId) => {
+    // Toggle the selected session ID in the state
+    setSelectedSessionIds((prevIds) =>
+      prevIds.includes(sessionId)
+        ? prevIds.filter((id) => id !== sessionId)
+        : [...prevIds, sessionId]
+    );
   };
 
   return (
@@ -66,14 +95,21 @@ const Booking = () => {
                 <td>{session.MaxParticipants}</td>
                 {isLoggedIn && (
                   <td>
-                    <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      onChange={() => handleCheckboxChange(session.SessionID)}
+                    />
                   </td>
                 )}
               </tr>
             ))}
           </tbody>
         </table>
-        {isLoggedIn && <button className="btn btn-primary">Book</button>}
+        {isLoggedIn && (
+          <button className="btn btn-primary" onClick={handleBookSession}>
+            Book
+          </button>
+        )}
       </div>
     </div>
   );

@@ -158,15 +158,39 @@ app.post("/volunteers", (req, res) => {
   );
 });
 
-app.get("/volunteers", (req, res) => {
-  const sql = "SELECT * FROM VolunteerSessions";
-  db.query(sql, (err, data) => {
+app.get("/volunteers/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  // Query to fetch sessions that the user has not signed up for
+  const sql = `
+    SELECT *
+    FROM VolunteerSessions
+    WHERE SessionID NOT IN (
+      SELECT SessionID FROM SessionSignups WHERE UserID = ?
+    )
+  `;
+  db.query(sql, [userId], (err, data) => {
     if (err) {
       console.error("Error executing SELECT query:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
     return res.status(200).json(data);
+  });
+});
+
+app.post("/session-signup", (req, res) => {
+  const { sessionId, userId } = req.body;
+
+  const sql = "INSERT INTO SessionSignups (SessionID, UserID) VALUES (?, ?)";
+  db.query(sql, [sessionId, userId], (err, result) => {
+    if (err) {
+      console.error("Error executing INSERT query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Session signed up successfully");
+    return res.status(200).json({ message: "Session signed up successfully" });
   });
 });
 
