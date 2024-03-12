@@ -43,7 +43,15 @@ app.get("/users/:username", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-  const { name, surname, email, password, username, companyName } = req.body;
+  const {
+    name,
+    surname,
+    email,
+    password,
+    username,
+    isOrganization,
+    companyName,
+  } = req.body;
 
   // Check if the username or email already exists
   const checkUserQuery =
@@ -64,20 +72,10 @@ app.post("/signup", (req, res) => {
 
     // Insert the new user
     const insertUserQuery =
-      "INSERT INTO users (FirstName, LastName, Email, Password, UserName, Company, CompanyName) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    // If user isOrganization is true, set Company column to true and insert the company name
-    const isOrganization = req.body.isOrganization === "true";
+      "INSERT INTO users (FirstName, LastName, Email, Password, UserName, Company) VALUES (?, ?, ?, ?, ?, ?)";
     db.query(
       insertUserQuery,
-      [
-        name,
-        surname,
-        email,
-        password,
-        username,
-        isOrganization,
-        isOrganization ? companyName : null,
-      ],
+      [name, surname, email, password, username, isOrganization],
       (insertErr, insertResult) => {
         if (insertErr) {
           console.error("Error executing INSERT query:", insertErr);
@@ -85,6 +83,27 @@ app.post("/signup", (req, res) => {
         }
 
         console.log("User inserted successfully");
+
+        if (isOrganization === "true") {
+          // Insert into Organizations table only if isOrganization is true
+          const insertOrganizationQuery =
+            "INSERT INTO Organizations (Name, UserID) VALUES (?, ?)";
+          db.query(
+            insertOrganizationQuery,
+            [companyName, insertResult.insertId],
+            (orgInsertErr, orgInsertResult) => {
+              if (orgInsertErr) {
+                console.error(
+                  "Error inserting into Organizations table:",
+                  orgInsertErr
+                );
+                return res.status(500).json({ error: "Internal Server Error" });
+              }
+              console.log("Organization inserted successfully");
+            }
+          );
+        }
+
         return res.status(200).json({ message: "User inserted successfully" });
       }
     );
