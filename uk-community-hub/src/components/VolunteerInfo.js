@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Volunteering.css";
 import VolunteerSignUp from "./VolunteerSignUp";
+import VolunteerOrg from "./VolunteerOrg";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
 const VolunteerList = () => {
@@ -10,10 +11,6 @@ const VolunteerList = () => {
   const showOrganizationOptions = () => {
     setShowOrganizationForm(true); // Show the organization form directly
     setShowIndividualForm(false);
-  };
-
-  const handleCloseForm = () => {
-    setShowOrganizationForm(false);
   };
 
   const popover = (
@@ -58,13 +55,7 @@ const VolunteerList = () => {
       )}
 
       {showOrganizationForm && (
-        <div>
-          <h3>Choose an Organization:</h3>
-          {/* Add your organization selection form here */}
-          <button className="btn btn-danger" onClick={handleCloseForm}>
-            Close
-          </button>
-        </div>
+        <VolunteerOrg setShowOrganizationForm={setShowOrganizationForm} />
       )}
     </div>
   );
