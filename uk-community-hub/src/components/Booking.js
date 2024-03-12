@@ -61,8 +61,26 @@ const Booking = () => {
       console.log("Sessions booked successfully");
       setSelectedSessionIds([]);
       fetchVolunteers(userId); // Refresh the sessions after booking
+      fetchUserSessions(userId); // same as above
     } catch (error) {
       console.error("Error booking sessions:", error);
+    }
+  };
+
+  const handleCancelSession = async () => {
+    try {
+      for (const sessionId of selectedSessionIds) {
+        await axios.post("http://localhost:8081/session-cancellation", {
+          sessionId,
+          userId,
+        });
+      }
+      console.log("Deleted booking successfully");
+      setSelectedSessionIds([]);
+      fetchVolunteers(userId); // Refresh the sessions after booking
+      fetchUserSessions(userId); // same as above
+    } catch (error) {
+      console.error("Error cancelling sessions:", error);
     }
   };
 
@@ -120,7 +138,12 @@ const Booking = () => {
                   ))}
                 </tbody>
               </table>
-              <button className="btn btn-danger">Cancel</button>
+              <button
+                className="btn btn-danger m-1"
+                onClick={handleCancelSession}
+              >
+                Cancel
+              </button>
             </>
           ) : (
             <p>No sessions linked to the user</p>
@@ -128,42 +151,44 @@ const Booking = () => {
         </>
       )}
       <h4 className="booking-sub">Available Sessions</h4>
-      <div className="table-responsive">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>Session</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Max Participants</th>
-              {isLoggedIn && <th>Book</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {volunteerSessions.map((session) => (
-              <tr key={session.SessionID}>
-                <td>{session.SessionName}</td>
-                <td>{new Date(session.Date).toLocaleDateString("en-GB")}</td>
-                <td>{session.Time}</td>
-                <td>{session.MaxParticipants}</td>
-                {isLoggedIn && (
-                  <td>
-                    <input
-                      type="checkbox"
-                      onChange={() => handleCheckboxChange(session.SessionID)}
-                    />
-                  </td>
-                )}
+      {volunteerSessions.length > 0 ? (
+        <div className="table-responsive">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Session</th>
+                <th>Date</th>
+                <th>Time</th>
+                {isLoggedIn && <th>Book</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
-        {isLoggedIn && (
-          <button className="btn btn-primary" onClick={handleBookSession}>
-            Book
-          </button>
-        )}
-      </div>
+            </thead>
+            <tbody>
+              {volunteerSessions.map((session) => (
+                <tr key={session.SessionID}>
+                  <td>{session.SessionName}</td>
+                  <td>{new Date(session.Date).toLocaleDateString("en-GB")}</td>
+                  <td>{session.Time}</td>
+                  {isLoggedIn && (
+                    <td>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleCheckboxChange(session.SessionID)}
+                      />
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {isLoggedIn && (
+            <button className="btn btn-primary" onClick={handleBookSession}>
+              Book
+            </button>
+          )}
+        </div>
+      ) : (
+        <p>No Available Sessions</p>
+      )}
     </div>
   );
 };

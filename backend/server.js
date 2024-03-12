@@ -194,6 +194,21 @@ app.post("/session-signup", (req, res) => {
   });
 });
 
+app.post("/session-cancellation", (req, res) => {
+  const { sessionId, userId } = req.body;
+
+  const sql = "DELETE FROM SessionSignups WHERE SessionID = ? AND UserID = ?";
+  db.query(sql, [sessionId, userId], (err, result) => {
+    if (err) {
+      console.error("Error executing DELETE query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Successfully cancelled session");
+    return res.status(200).json({ message: "Successfully cancelled session" });
+  });
+});
+
 app.get("/booked-sessions/:userId", (req, res) => {
   const { userId } = req.params;
 
