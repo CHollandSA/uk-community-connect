@@ -57,7 +57,7 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="errorMessage">Error: {error}</p>}
       <div className="form-group">
         <label htmlFor="name">Name</label>
         <input
