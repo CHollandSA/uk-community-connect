@@ -70,7 +70,7 @@ const Header = () => {
     email,
     password,
     isOrganization,
-    companyName
+    companyName // Add companyName parameter
   ) => {
     try {
       const response = await fetch("http://localhost:8081/signup", {
@@ -84,8 +84,8 @@ const Header = () => {
           username,
           email,
           password,
-          isOrganization: String(isOrganization), // Convert to string for consistency
-          companyName,
+          isOrganization: isOrganization ? "true" : "false", // Convert to string for consistency
+          companyName, // Pass companyName in the request body
         }),
       });
 
@@ -102,7 +102,6 @@ const Header = () => {
       return false;
     }
   };
-
   const handleLogout = () => {
     // Clear username from local storage when logging out
     localStorage.removeItem("username");

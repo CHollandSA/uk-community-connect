@@ -44,7 +44,8 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
       username,
       email,
       password,
-      isOrganization
+      isOrganization,
+      companyName
     );
 
     if (success) {

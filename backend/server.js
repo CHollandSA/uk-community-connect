@@ -71,11 +71,19 @@ app.post("/signup", (req, res) => {
     }
 
     // Insert the new user
+    // Insert the new user
     const insertUserQuery =
       "INSERT INTO users (FirstName, LastName, Email, Password, UserName, Company) VALUES (?, ?, ?, ?, ?, ?)";
     db.query(
       insertUserQuery,
-      [name, surname, email, password, username, isOrganization],
+      [
+        name,
+        surname,
+        email,
+        password,
+        username,
+        isOrganization === "true" ? 1 : 0,
+      ], // Set Company to 1 if isOrganization is "true", otherwise set it to 0
       (insertErr, insertResult) => {
         if (insertErr) {
           console.error("Error executing INSERT query:", insertErr);
