@@ -46,29 +46,33 @@ const Organization = () => {
     }
   };
 
-  const handleBookSession = async () => {
+  const handleCommit = async () => {
     try {
-      for (const sessionId of selectedSessionIds) {
-        await axios.post("http://localhost:8081/session-signup", {
-          sessionId,
-          userId,
-        });
-      }
-      console.log("Sessions booked successfully");
-      setSelectedSessionIds([]);
-      fetchVolunteers(userId); // Refresh the sessions after booking
-      // fetchUserSessions(userId); // eslint-disable-next-line
-    } catch (error) {
-      console.error("Error booking sessions:", error);
-    }
-  };
+      const editedSessions = volunteerSessions.filter(
+        (session) => session.SessionID
+      ); // Filter sessions with SessionID
+      const newSessions = volunteerSessions.filter(
+        (session) => !session.SessionID
+      ); // Filter sessions without SessionID (new sessions)
 
-  const handleCheckboxChange = (sessionId) => {
-    setSelectedSessionIds((prevIds) =>
-      prevIds.includes(sessionId)
-        ? prevIds.filter((id) => id !== sessionId)
-        : [...prevIds, sessionId]
-    );
+      // Handle edited sessions
+      for (const session of editedSessions) {
+        await axios.put(
+          `http://localhost:8081/volunteers/${session.SessionID}`,
+          session
+        );
+      }
+
+      // Handle new sessions
+      for (const session of newSessions) {
+        await axios.post("http://localhost:8081/volunteers", session);
+      }
+
+      console.log("Changes committed successfully");
+      fetchVolunteers(userId); // Refresh the sessions after committing changes
+    } catch (error) {
+      console.error("Error committing changes:", error);
+    }
   };
 
   const handleInputChange = (index, field, value) => {
@@ -80,6 +84,16 @@ const Organization = () => {
     } else {
       updatedSessions[index][field] = value;
     }
+    setVolunteerSessions(updatedSessions);
+  };
+
+  const handleAddSession = () => {
+    setVolunteerSessions([...volunteerSessions, {}]);
+  };
+
+  const handleDeleteSession = (index) => {
+    const updatedSessions = [...volunteerSessions];
+    updatedSessions.splice(index, 1);
     setVolunteerSessions(updatedSessions);
   };
 
@@ -96,8 +110,9 @@ const Organization = () => {
         </OverlayTrigger>
       </div>
       <h4 className="booking-sub">Available Sessions</h4>
-      {volunteerSessions.length > 0 ? (
-        <div className="table-responsive">
+
+      <div className="border-box">
+        <div className="table-responsive border-box">
           <table className="table table-striped">
             <thead>
               <tr>
@@ -109,66 +124,66 @@ const Organization = () => {
                 <th>Max Participants</th>
                 <th>Experience</th>
                 <th>Host</th>
-                {isLoggedIn && <th>Book</th>}
+                {isLoggedIn && <th>Delete</th>}
               </tr>
             </thead>
             <tbody>
               {volunteerSessions.map((session, index) => (
-                <tr key={session.SessionID}>
+                <tr key={index}>
                   <td>
                     <input
                       type="text"
-                      value={session.SessionName}
+                      value={session.SessionName || ""}
                       onChange={(e) =>
                         handleInputChange(index, "SessionName", e.target.value)
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   <td>
                     <input
                       type="text"
-                      value={session.Location}
+                      value={session.Location || ""}
                       onChange={(e) =>
                         handleInputChange(index, "Location", e.target.value)
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   <td>
                     <input
                       type="date"
-                      value={session.Date}
+                      value={session.Date || ""}
                       onChange={(e) =>
                         handleInputChange(index, "Date", e.target.value)
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   <td>
                     <input
                       type="time"
-                      value={session.Time}
+                      value={session.Time || ""}
                       onChange={(e) =>
                         handleInputChange(index, "Time", e.target.value)
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   <td>
                     <input
                       type="number"
-                      value={session.Duration}
+                      value={session.Duration || ""}
                       onChange={(e) =>
                         handleInputChange(index, "Duration", e.target.value)
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   <td>
                     <input
                       type="number"
-                      value={session.MaxParticipants}
+                      value={session.MaxParticipants || ""}
                       onChange={(e) =>
                         handleInputChange(
                           index,
@@ -176,49 +191,58 @@ const Organization = () => {
                           e.target.value
                         )
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   <td>
                     <input
                       type="text"
-                      value={session.Experience}
+                      value={session.Experience || ""}
                       onChange={(e) =>
                         handleInputChange(index, "Experience", e.target.value)
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   <td>
                     <input
                       type="text"
-                      value={session.Host}
+                      value={session.Host || ""}
                       onChange={(e) =>
                         handleInputChange(index, "Host", e.target.value)
                       }
-                      className="input-small" // Apply the CSS class
+                      className="input-small"
                     />
                   </td>
                   {isLoggedIn && (
                     <td>
-                      <input
-                        type="checkbox"
-                        onChange={() => handleCheckboxChange(session.SessionID)}
-                      />
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleDeleteSession(index)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   )}
                 </tr>
               ))}
             </tbody>
           </table>
-          {isLoggedIn && (
-            <button className="btn btn-primary" onClick={handleBookSession}>
-              Book
-            </button>
-          )}
         </div>
-      ) : (
-        <p>No Available Sessions</p>
+      </div>
+      {isLoggedIn && (
+        <div>
+          <button
+            className="btn btn-primary"
+            style={{ marginRight: "10px" }}
+            onClick={handleAddSession}
+          >
+            Add Session
+          </button>
+          <button className="btn btn-primary" onClick={handleCommit}>
+            Commit
+          </button>
+        </div>
       )}
     </div>
   );

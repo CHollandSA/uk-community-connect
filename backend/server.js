@@ -146,6 +146,41 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.put("/volunteers/:sessionId", (req, res) => {
+  const sessionId = req.params.sessionId;
+  const sessionData = req.body;
+
+  const sql = `
+    UPDATE VolunteerSessions
+    SET SessionName = ?, Location = ?, Date = ?, Time = ?, Duration = ?, MaxParticipants = ?, OrganizerID = ?, Experience = ?, Host = ?
+    WHERE SessionID = ?
+  `;
+  db.query(
+    sql,
+    [
+      sessionData.SessionName,
+      sessionData.Location,
+      sessionData.Date,
+      sessionData.Time,
+      sessionData.Duration,
+      sessionData.MaxParticipants,
+      sessionData.OrganizerID,
+      sessionData.Experience,
+      sessionData.Host,
+      sessionId,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error executing UPDATE query:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      console.log("Session updated successfully");
+      return res.status(200).json({ message: "Session updated successfully" });
+    }
+  );
+});
+
 app.post("/volunteers", (req, res) => {
   const {
     sessionName,
