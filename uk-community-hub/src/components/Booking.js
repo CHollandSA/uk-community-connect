@@ -142,7 +142,7 @@ const Booking = () => {
                 className="btn btn-danger m-1"
                 onClick={handleCancelSession}
               >
-                Cancel
+                Remove
               </button>
             </>
           ) : (

@@ -29,6 +29,7 @@ function VolunteerSignUp({ setShowForm }) {
           duration,
           maxParticipants,
           experience,
+          host: "Individual",
         }),
       });
 

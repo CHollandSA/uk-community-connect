@@ -43,10 +43,10 @@ const VolunteerList = () => {
             setShowOrganizationForm(false);
           }}
         >
-          Volunteer as Individual
+          Volunteer
         </button>
         <button className="btn btn-primary" onClick={showOrganizationOptions}>
-          Volunteer with Organization
+          Volunteer with an Organization
         </button>
       </div>
 

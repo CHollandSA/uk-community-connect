@@ -32,3 +32,12 @@
    margin-left: 10px; 
    font-size: larger;
 }
+
+.input-small{
+  width: 100px;
+}
+
+.table-responsive{
+  border: 3px solid #ccc; /* Example border style */
+  padding: 10px; /* Adjust padding as needed */
+}

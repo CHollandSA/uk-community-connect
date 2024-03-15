@@ -155,11 +155,12 @@ app.post("/volunteers", (req, res) => {
     duration,
     maxParticipants,
     experience,
+    host,
   } = req.body;
   const organizerId = req.headers["user-id"]; // Retrieve userId from headers
 
   const sql =
-    "INSERT INTO VolunteerSessions (SessionName, Location, Date, Time, Duration, MaxParticipants, OrganizerID, Experience, MaxVolunteers) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO VolunteerSessions (SessionName, Location, Date, Time, Duration, MaxParticipants, OrganizerID, Experience, Host) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
   db.query(
     sql,
     [
@@ -171,7 +172,7 @@ app.post("/volunteers", (req, res) => {
       maxParticipants,
       organizerId,
       experience,
-      maxParticipants,
+      host,
     ],
     (err, result) => {
       if (err) {
