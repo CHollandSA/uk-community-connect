@@ -65,6 +65,47 @@ const Organization = () => {
     setExperience(session.Experience);
   };
 
+  const handleAddSession = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      // Log the session data before making the POST request
+      console.log("Adding session:", {
+        SessionName: sessionName,
+        Location: location,
+        Date: date,
+        Time: time,
+        Duration: duration,
+        MaxParticipants: maxParticipants,
+        OrganizerID: userId, // Use userId from localStorage
+        Experience: experience,
+        Host: "Organization",
+      });
+
+      await axios.post(
+        "http://localhost:8081/volunteers",
+        {
+          sessionName: sessionName,
+          location: location,
+          date: date,
+          time: time,
+          duration: duration,
+          maxParticipants: maxParticipants,
+          experience: experience,
+          host: "Organization",
+        },
+        {
+          headers: {
+            "user-id": userId, // Pass userId in headers
+          },
+        }
+      );
+      fetchVolunteers(userId);
+      setShowForm(false);
+    } catch (error) {
+      console.error("Error adding session:", error);
+    }
+  };
+
   const handleDeleteSession = async () => {
     try {
       await axios.delete(
@@ -80,6 +121,7 @@ const Organization = () => {
 
   const handleUpdateSession = async () => {
     try {
+      const userId = localStorage.getItem("userId");
       await axios.put(
         `http://localhost:8081/volunteers/${selectedSession.SessionID}`,
         {
@@ -89,10 +131,12 @@ const Organization = () => {
           Time: time,
           Duration: duration,
           MaxParticipants: maxParticipants,
+          OrganizerID: userId, // Use userId from localStorage
           Experience: experience,
+          Host: "Organization",
         }
       );
-      fetchVolunteers();
+      fetchVolunteers(userId);
       setShowForm(false);
       setSelectedSession(null);
     } catch (error) {
@@ -150,6 +194,23 @@ const Organization = () => {
               ))}
             </tbody>
           </table>
+          <button
+            type="button"
+            className="btn btn-primary mt-3"
+            onClick={() => {
+              setShowForm(true);
+              setSessionName("");
+              setLocation("");
+              setDate("");
+              setTime("");
+              setDuration("");
+              setMaxParticipants("");
+              setExperience("");
+              setSelectedSession(null);
+            }}
+          >
+            Add Session
+          </button>
         </div>
       </div>
 
@@ -253,24 +314,34 @@ const Organization = () => {
           </div>
 
           <div className="mb-3">
-            <button
-              type="button"
-              className="btn btn-danger me-2"
-              onClick={handleDeleteSession}
-            >
-              Delete
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleUpdateSession}
-            >
-              Update
-            </button>
+            {selectedSession ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-danger me-2"
+                  onClick={handleDeleteSession}
+                >
+                  Delete
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleUpdateSession}
+                >
+                  Update
+                </button>
+              </>
+            ) : (
+              <button className="btn btn-primary" onClick={handleAddSession}>
+                Confirm
+              </button>
+            )}
             <button
               type="button"
               className="btn btn-secondary close-btn"
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                setShowForm(false);
+              }}
             >
               Close
             </button>
