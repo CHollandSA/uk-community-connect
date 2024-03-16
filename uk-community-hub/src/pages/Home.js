@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <div
       style={{
-        backgroundImage: "url(/images/011-subtle-light-patterns.jpg)",
+        backgroundImage: "url(./images/011-subtle-light-patterns.jpg)",
         fontFamily: "Arial",
       }}
     >

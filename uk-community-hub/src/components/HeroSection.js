@@ -17,7 +17,7 @@ export default function HeroSection() {
   return (
     <section className="hero">
       <img
-        src="\images\Flag_Of_the_United_Kingdom.png"
+        src="./images/Flag_Of_the_United_Kingdom.png"
         alt="UK"
         className="hero--photo"
       />
@@ -25,7 +25,7 @@ export default function HeroSection() {
         <h2 className="hero--header">Information</h2>
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <img
-            src="/images/info-circle-line-icon.png"
+            src="./images/info-circle-line-icon.png"
             alt="Info"
             className="info-icon"
           />

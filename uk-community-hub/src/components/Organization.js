@@ -103,7 +103,7 @@ const Organization = () => {
         <h2>Organization Section</h2>{" "}
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <img
-            src="/images/info-circle-line-icon.png"
+            src="./images/info-circle-line-icon.png"
             alt="Info"
             className="info-icon"
           />

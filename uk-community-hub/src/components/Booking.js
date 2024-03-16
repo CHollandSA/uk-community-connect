@@ -98,7 +98,7 @@ const Booking = () => {
         <h2>Booking</h2>{" "}
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <img
-            src="/images/info-circle-line-icon.png"
+            src="./images/info-circle-line-icon.png"
             alt="Info"
             className="info-icon"
           />
