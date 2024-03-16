@@ -6,8 +6,16 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 const Organization = () => {
   const [volunteerSessions, setVolunteerSessions] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedSessionIds, setSelectedSessionIds] = useState([]);
-  const [userId, setUserId] = useState(null);
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const [sessionName, setSessionName] = useState("");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [duration, setDuration] = useState("");
+  const [maxParticipants, setMaxParticipants] = useState("");
+  const [experience, setExperience] = useState("");
 
   const popover = (
     <Popover id="popover-basic">
@@ -21,7 +29,6 @@ const Organization = () => {
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    setUserId(userId);
     setIsLoggedIn(!!userId);
     fetchVolunteers(userId);
   }, []);
@@ -46,55 +53,56 @@ const Organization = () => {
     }
   };
 
-  const handleCommit = async () => {
+  const handleSelectSession = (session) => {
+    setSelectedSession(session);
+    setShowForm(true);
+    setSessionName(session.SessionName);
+    setLocation(session.Location);
+    setDate(session.Date);
+    setTime(session.Time);
+    setDuration(session.Duration);
+    setMaxParticipants(session.MaxParticipants);
+    setExperience(session.Experience);
+  };
+
+  const handleDeleteSession = async () => {
     try {
-      const editedSessions = volunteerSessions.filter(
-        (session) => session.SessionID
-      ); // Filter sessions with SessionID
-      const newSessions = volunteerSessions.filter(
-        (session) => !session.SessionID
-      ); // Filter sessions without SessionID (new sessions)
-
-      // Handle edited sessions
-      for (const session of editedSessions) {
-        await axios.put(
-          `http://localhost:8081/volunteers/${session.SessionID}`,
-          session
-        );
-      }
-
-      // Handle new sessions
-      for (const session of newSessions) {
-        await axios.post("http://localhost:8081/volunteers", session);
-      }
-
-      console.log("Changes committed successfully");
-      fetchVolunteers(userId); // Refresh the sessions after committing changes
+      await axios.delete(
+        `http://localhost:8081/volunteers/${selectedSession.SessionID}`
+      );
+      fetchVolunteers();
+      setShowForm(false);
+      setSelectedSession(null);
     } catch (error) {
-      console.error("Error committing changes:", error);
+      console.error("Error deleting session:", error);
     }
   };
 
-  const handleInputChange = (index, field, value) => {
-    const updatedSessions = [...volunteerSessions];
-    if (field === "Date") {
-      // Format the date string
-      const date = new Date(value).toISOString().split("T")[0];
-      updatedSessions[index][field] = date;
-    } else {
-      updatedSessions[index][field] = value;
+  const handleUpdateSession = async () => {
+    try {
+      await axios.put(
+        `http://localhost:8081/volunteers/${selectedSession.SessionID}`,
+        {
+          SessionName: sessionName,
+          Location: location,
+          Date: date,
+          Time: time,
+          Duration: duration,
+          MaxParticipants: maxParticipants,
+          Experience: experience,
+        }
+      );
+      fetchVolunteers();
+      setShowForm(false);
+      setSelectedSession(null);
+    } catch (error) {
+      console.error("Error updating session:", error);
     }
-    setVolunteerSessions(updatedSessions);
   };
 
-  const handleAddSession = () => {
-    setVolunteerSessions([...volunteerSessions, {}]);
-  };
-
-  const handleDeleteSession = (index) => {
-    const updatedSessions = [...volunteerSessions];
-    updatedSessions.splice(index, 1);
-    setVolunteerSessions(updatedSessions);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission if needed
   };
 
   return (
@@ -111,116 +119,30 @@ const Organization = () => {
       </div>
       <h4 className="booking-sub">Available Sessions</h4>
 
-      <div className="border-box">
-        <div className="table-responsive border-box">
+      <div>
+        <div className="table-responsive">
           <table className="table table-striped">
             <thead>
               <tr>
+                <th>Session ID</th>
                 <th>Session Name</th>
-                <th>Location</th>
                 <th>Date</th>
-                <th>Time</th>
-                <th>Duration</th>
-                <th>Max Participants</th>
-                <th>Experience</th>
-                <th>Host</th>
-                {isLoggedIn && <th>Delete</th>}
+                {isLoggedIn && <th></th>}
               </tr>
             </thead>
             <tbody>
               {volunteerSessions.map((session, index) => (
                 <tr key={index}>
-                  <td>
-                    <input
-                      type="text"
-                      value={session.SessionName || ""}
-                      onChange={(e) =>
-                        handleInputChange(index, "SessionName", e.target.value)
-                      }
-                      className="input-small"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={session.Location || ""}
-                      onChange={(e) =>
-                        handleInputChange(index, "Location", e.target.value)
-                      }
-                      className="input-small"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="date"
-                      value={session.Date || ""}
-                      onChange={(e) =>
-                        handleInputChange(index, "Date", e.target.value)
-                      }
-                      className="input-small"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="time"
-                      value={session.Time || ""}
-                      onChange={(e) =>
-                        handleInputChange(index, "Time", e.target.value)
-                      }
-                      className="input-small"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={session.Duration || ""}
-                      onChange={(e) =>
-                        handleInputChange(index, "Duration", e.target.value)
-                      }
-                      className="input-small"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={session.MaxParticipants || ""}
-                      onChange={(e) =>
-                        handleInputChange(
-                          index,
-                          "MaxParticipants",
-                          e.target.value
-                        )
-                      }
-                      className="input-small"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={session.Experience || ""}
-                      onChange={(e) =>
-                        handleInputChange(index, "Experience", e.target.value)
-                      }
-                      className="input-small"
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={session.Host || ""}
-                      onChange={(e) =>
-                        handleInputChange(index, "Host", e.target.value)
-                      }
-                      className="input-small"
-                    />
-                  </td>
+                  <td>{session.SessionID}</td>
+                  <td>{session.SessionName}</td>
+                  <td>{session.Date}</td>
                   {isLoggedIn && (
                     <td>
                       <button
-                        className="btn btn-danger"
-                        onClick={() => handleDeleteSession(index)}
+                        className="btn btn-primary"
+                        onClick={() => handleSelectSession(session)}
                       >
-                        Delete
+                        Select
                       </button>
                     </td>
                   )}
@@ -230,19 +152,130 @@ const Organization = () => {
           </table>
         </div>
       </div>
-      {isLoggedIn && (
-        <div>
-          <button
-            className="btn btn-primary"
-            style={{ marginRight: "10px" }}
-            onClick={handleAddSession}
-          >
-            Add Session
-          </button>
-          <button className="btn btn-primary" onClick={handleCommit}>
-            Commit
-          </button>
-        </div>
+
+      {showForm && (
+        <form onSubmit={handleSubmit} className="form">
+          <div className="mb-3">
+            <label htmlFor="sessionName" className="form-label">
+              Session Name:
+            </label>
+            <input
+              type="text"
+              id="sessionName"
+              className="form-control"
+              value={sessionName}
+              onChange={(e) => setSessionName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="location" className="form-label">
+              Location:
+            </label>
+            <input
+              type="text"
+              id="location"
+              className="form-control"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="date" className="form-label">
+              Date:
+            </label>
+            <input
+              type="date"
+              id="date"
+              className="form-control"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="time" className="form-label">
+              Time:
+            </label>
+            <input
+              type="time"
+              id="time"
+              className="form-control"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="duration" className="form-label">
+              Duration:
+            </label>
+            <input
+              type="text"
+              id="duration"
+              className="form-control"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="maxParticipants" className="form-label">
+              Max Participants:
+            </label>
+            <input
+              type="number"
+              id="maxParticipants"
+              className="form-control"
+              value={maxParticipants}
+              onChange={(e) => setMaxParticipants(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="experience" className="form-label">
+              Experience:
+            </label>
+            <textarea
+              id="experience"
+              className="form-control"
+              value={experience}
+              onChange={(e) => setExperience(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <button
+              type="button"
+              className="btn btn-danger me-2"
+              onClick={handleDeleteSession}
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleUpdateSession}
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary close-btn"
+              onClick={() => setShowForm(false)}
+            >
+              Close
+            </button>
+          </div>
+        </form>
       )}
     </div>
   );
