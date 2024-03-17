@@ -146,6 +146,22 @@ app.post("/login", (req, res) => {
   });
 });
 
+// Add this route handler for deleting sessions
+app.delete("/volunteers/:sessionId", (req, res) => {
+  const sessionId = req.params.sessionId;
+
+  const sql = "DELETE FROM VolunteerSessions WHERE SessionID = ?";
+  db.query(sql, [sessionId], (err, result) => {
+    if (err) {
+      console.error("Error executing DELETE query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Session deleted successfully");
+    return res.status(200).json({ message: "Session deleted successfully" });
+  });
+});
+
 app.put("/volunteers/:sessionId", (req, res) => {
   const sessionId = req.params.sessionId;
   const sessionData = req.body;

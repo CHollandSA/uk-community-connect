@@ -101,6 +101,7 @@ const Organization = () => {
       );
       fetchVolunteers(userId);
       setShowForm(false);
+      window.location.reload();
     } catch (error) {
       console.error("Error adding session:", error);
     }
@@ -111,9 +112,10 @@ const Organization = () => {
       await axios.delete(
         `http://localhost:8081/volunteers/${selectedSession.SessionID}`
       );
-      fetchVolunteers();
+      fetchVolunteers(); // Fetch updated list of sessions after deletion
       setShowForm(false);
       setSelectedSession(null);
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting session:", error);
     }
