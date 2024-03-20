@@ -197,6 +197,59 @@ app.put("/volunteers/:sessionId", (req, res) => {
   );
 });
 
+app.get("/volunteers/unapproved", (req, res) => {
+  const sql = `
+    SELECT VolunteerSessions.*, users.username AS organizerUsername
+    FROM VolunteerSessions
+    INNER JOIN users ON VolunteerSessions.OrganizerID = users.UserID
+    WHERE VolunteerSessions.approved = 0
+  `;
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error("Error fetching unapproved sessions:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    return res.status(200).json(result);
+  });
+});
+
+app.put("/volunteers/:sessionId/approve", (req, res) => {
+  const sessionId = req.params.sessionId;
+
+  const sql = `
+    UPDATE VolunteerSessions
+    SET approved = 1
+    WHERE SessionID = ?
+  `;
+  db.query(sql, [sessionId], (err, result) => {
+    if (err) {
+      console.error(`Error approving session ${sessionId}:`, err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    console.log(`Session ${sessionId} approved successfully`);
+    return res.status(200).json({ message: "Session approved successfully" });
+  });
+});
+
+app.delete("/volunteers/:sessionId", (req, res) => {
+  const sessionId = req.params.sessionId;
+
+  const sql = `
+    DELETE FROM VolunteerSessions
+    WHERE SessionID = ?
+  `;
+  db.query(sql, [sessionId], (err, result) => {
+    if (err) {
+      console.error("Error deleting session:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("Session deleted successfully");
+    return res.status(200).json({ message: "Session deleted successfully" });
+  });
+});
+
 app.post("/volunteers", (req, res) => {
   const {
     sessionName,
