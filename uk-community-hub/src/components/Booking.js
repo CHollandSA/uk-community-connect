@@ -33,7 +33,11 @@ const Booking = () => {
       const response = await axios.get(
         `http://localhost:8081/volunteers/${userId}`
       );
-      setVolunteerSessions(response.data);
+      // Filter the response data to include only approved sessions
+      const approvedSessions = response.data.filter(
+        (session) => session.approved === 1
+      );
+      setVolunteerSessions(approvedSessions);
     } catch (error) {
       console.error(error);
     }

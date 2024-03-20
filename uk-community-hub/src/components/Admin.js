@@ -128,7 +128,7 @@ const Admin = () => {
             <button className="btn btn-success mb-2" onClick={handleApprove}>
               Approve
             </button>
-            <button className="btn btn-danger ml-2" onClick={handleDeny}>
+            <button className="btn btn-danger mb-2" onClick={handleDeny}>
               Deny
             </button>
           </div>
