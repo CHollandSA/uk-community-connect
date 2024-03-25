@@ -2,6 +2,7 @@ import React from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import "./Citizenship.css";
 import "./App.css";
+import "./Hero.css";
 
 function CitizenshipTestSection() {
   const popover = (
@@ -71,6 +72,11 @@ function CitizenshipTestSection() {
             weeks out from the current date, you can reduce the cost to around
             £80.
           </p>
+          <img
+            src="./images/UK-IMG3.jpg"
+            alt="Placeholder"
+            className="img-fluid"
+          />
         </section>
         <section>
           <h4>
@@ -100,6 +106,11 @@ function CitizenshipTestSection() {
             valuable knowledge about the UK, but it also contributes to your
             integration into the country's society.
           </p>
+          <img
+            src="./images/UK-IMG7.jpg"
+            alt="Placeholder"
+            className="img-fluid"
+          />
         </section>
         <section>
           <h4>
@@ -130,6 +141,11 @@ function CitizenshipTestSection() {
             time to time. Be sure to check the available sessions for
             opportunities to improve your English skills.
           </p>
+          <img
+            src="./images/UK-IMG6.jpg"
+            alt="Placeholder"
+            className="img-fluid"
+          />
         </section>
         <section>
           <h4>
@@ -161,8 +177,58 @@ function CitizenshipTestSection() {
           <p>
             Trying a new activity or joining a club or society can also be a
             great way to meet people and immerse yourself in the local culture
-            and community.
+            and community.{" "}
+            <a
+              href="https://www.meetup.com/cities/gb/bt4_2ff/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Meetup
+            </a>{" "}
+            offer a range of different activities that you can join.
           </p>
+          <img
+            src="./images/UK-IMG5.jpg"
+            alt="Placeholder"
+            className="img-fluid"
+          />
+        </section>
+        <section>
+          <h4>
+            <u>Range of Activities</u>
+          </h4>
+          <p>
+            In addition to the resources provided on this website, there's a
+            wide range of activities available to newcomers in the United
+            Kingdom. From cultural events to sports clubs, and hobby groups to
+            volunteering opportunities, there's something for everyone.
+          </p>
+          <p>
+            Engaging in these activities not only aids in language acquisition
+            and cultural integration but also fosters a sense of belonging
+            within the community. Whether you're interested in exploring
+            historical landmarks, attending music festivals, or participating in
+            local charity initiatives, there are numerous avenues to enrich your
+            experience and connect with others.
+          </p>
+          <p>
+            Websites such as Meetup, Discover Northern Ireland, and Visit
+            Belfast provide comprehensive listings of events and activities
+            happening in various regions across the UK. Additionally, community
+            centers, libraries, and local councils often organize programs and
+            workshops tailored to newcomers, offering valuable opportunities for
+            socialization and skill development.
+          </p>
+          <p>
+            Embracing these activities not only enhances your journey towards
+            citizenship but also enriches your overall experience as you settle
+            into your new home in the United Kingdom.
+          </p>
+          <img
+            src="./images/UK-IMG4.jpg"
+            alt="Placeholder"
+            className="img-fluid"
+          />
         </section>
       </div>
     </div>

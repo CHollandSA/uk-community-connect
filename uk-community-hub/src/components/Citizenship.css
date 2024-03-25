@@ -1,24 +1,25 @@
 /* CitizenshipTestSection.module.css */
 
 .citizenship {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .left-side {
-    width: 50%;
-    padding-right: 20px;
-  }
-  
-  .right-side {
-    width: 50%;
-    text-align: right;
-  }
-  
-  .link-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+  padding: 20px;
+}
+
+.div-heading {
+  display: flex;
+  align-items: center;
+}
+
+.info-icon {
+  margin-left: 10px;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto; /* Center the images horizontally */
+  max-height: 400px;
+  display: block;
+}
