@@ -8,8 +8,8 @@ export default function HeroSection() {
     <Popover id="popover-basic">
       <Popover.Header as="h3">Information</Popover.Header>
       <Popover.Body>
-        Throughtout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
+        Throughout this site, you will see info icons like me. Click them to
+        learn more about the section you are on.
       </Popover.Body>
     </Popover>
   );
@@ -23,7 +23,7 @@ export default function HeroSection() {
       />
       <div className="div-heading">
         <h2 className="hero--header">Information</h2>
-        <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+        <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
           <img
             src="./images/info-circle-line-icon.png"
             alt="Info"

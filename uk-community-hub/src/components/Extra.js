@@ -16,7 +16,7 @@ export default function Extra() {
     <section className="hero">
       <div className="div-heading">
         <h2>Extra</h2>{" "}
-        <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+        <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
           <img
             src="./images/info-circle-line-icon.png"
             alt="Info"

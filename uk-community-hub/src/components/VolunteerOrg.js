@@ -8,7 +8,7 @@ function VolunteerOrg({ setShowOrganizationForm }) {
 
   return (
     <div>
-      <h3>Choose an Organization Cum:</h3>
+      <h3>Choose an Organization:</h3>
       {/* Add your organization selection form here */}
       <button className="btn btn-danger" onClick={handleCloseForm}>
         Close

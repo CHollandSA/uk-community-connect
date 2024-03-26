@@ -19,7 +19,7 @@ const Home = () => {
     <div
       style={{
         backgroundImage: "url(./images/011-subtle-light-patterns.jpg)",
-        fontFamily: "Arial",
+        fontFamily: "Poppins, sans-serif", //"Roboto, sans-serif
       }}
     >
       <Header />

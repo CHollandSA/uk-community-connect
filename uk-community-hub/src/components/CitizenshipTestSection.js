@@ -20,7 +20,7 @@ function CitizenshipTestSection() {
       <div>
         <div className="div-heading">
           <h2>Citizenship Section</h2>{" "}
-          <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+          <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
             <img
               src="./images/info-circle-line-icon.png"
               alt="Info"
