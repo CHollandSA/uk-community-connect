@@ -113,35 +113,39 @@ const Booking = () => {
           <h4 className="booking-sub">Booked Sessions</h4>
           {userSessions.length > 0 ? (
             <>
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Session</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Remove</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userSessions.map((session) => (
-                    <tr key={session.SessionID}>
-                      <td>{session.SessionName}</td>
-                      <td>
-                        {new Date(session.Date).toLocaleDateString("en-GB")}
-                      </td>
-                      <td>{session.Time}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          onChange={() =>
-                            handleCheckboxChange(session.SessionID)
-                          }
-                        />
-                      </td>
+              <div className="table-responsive">
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Session</th>
+                      <th>Location</th> {/* Added Location header */}
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Remove</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {userSessions.map((session) => (
+                      <tr key={session.SessionID}>
+                        <td>{session.SessionName}</td>
+                        <td>{session.Location}</td> {/* Added Location data */}
+                        <td>
+                          {new Date(session.Date).toLocaleDateString("en-GB")}
+                        </td>
+                        <td>{session.Time}</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            onChange={() =>
+                              handleCheckboxChange(session.SessionID)
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <button
                 className="btn btn-danger m-1"
                 onClick={handleCancelSession}
@@ -161,6 +165,7 @@ const Booking = () => {
             <thead>
               <tr>
                 <th>Session</th>
+                <th>Location</th>
                 <th>Date</th>
                 <th>Time</th>
                 {isLoggedIn && <th>Book</th>}
@@ -170,6 +175,7 @@ const Booking = () => {
               {volunteerSessions.map((session) => (
                 <tr key={session.SessionID}>
                   <td>{session.SessionName}</td>
+                  <td>{session.Location}</td>
                   <td>{new Date(session.Date).toLocaleDateString("en-GB")}</td>
                   <td>{session.Time}</td>
                   {isLoggedIn && (

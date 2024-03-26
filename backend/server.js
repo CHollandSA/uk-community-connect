@@ -232,6 +232,22 @@ app.put("/volunteers/:sessionId/approve", (req, res) => {
   });
 });
 
+app.get("/volunteersessions", (req, res) => {
+  const sql = `
+    SELECT VolunteerSessions.*, Organizations.Name AS OrganizationName
+    FROM VolunteerSessions
+    INNER JOIN Organizations ON VolunteerSessions.OrganizerID = Organizations.UserID
+  `;
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error("Error fetching volunteer sessions:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    return res.status(200).json(data);
+  });
+});
+
 app.delete("/volunteers/:sessionId", (req, res) => {
   const sessionId = req.params.sessionId;
 
@@ -345,7 +361,7 @@ app.get("/booked-sessions/:userId", (req, res) => {
   const { userId } = req.params;
 
   const sql = `
-    SELECT VolunteerSessions.SessionID, SessionName, Date, Time
+    SELECT VolunteerSessions.SessionID, SessionName, Location,Date, Time
     FROM SessionSignups
     INNER JOIN VolunteerSessions ON SessionSignups.SessionID = VolunteerSessions.SessionID
     WHERE UserID = ?

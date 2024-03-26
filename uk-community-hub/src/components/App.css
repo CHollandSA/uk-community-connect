@@ -6,7 +6,9 @@
 
 .hero--photo {
   max-width: 30%;
+  min-width: 300px;
   align-self: center;
+  margin-bottom: 10px;
 }
 
 .hero--header {
