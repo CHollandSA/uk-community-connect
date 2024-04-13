@@ -36,7 +36,7 @@ const Organization = () => {
   const fetchVolunteers = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8081/volunteers/${userId}`
+        `https://express-backend-plum.vercel.app/volunteers/${userId}`
       );
       const formattedSessions = response.data.map((session) => ({
         ...session,
@@ -82,7 +82,7 @@ const Organization = () => {
       });
 
       await axios.post(
-        "http://localhost:8081/volunteers",
+        "https://express-backend-plum.vercel.app/volunteers",
         {
           sessionName: sessionName,
           location: location,
@@ -101,7 +101,6 @@ const Organization = () => {
       );
       fetchVolunteers(userId);
       setShowForm(false);
-      window.location.reload();
     } catch (error) {
       console.error("Error adding session:", error);
     }
@@ -109,23 +108,99 @@ const Organization = () => {
 
   const handleDeleteSession = async () => {
     try {
+      if (!selectedSession) {
+        console.error("No session selected for deletion.");
+        return;
+      }
       await axios.delete(
-        `http://localhost:8081/volunteers/${selectedSession.SessionID}`
+        `https://express-backend-plum.vercel.app/volunteers/${selectedSession.SessionID}`
       );
-      fetchVolunteers(); // Fetch updated list of sessions after deletion
+      const userId = localStorage.getItem("userId");
+      fetchVolunteers(userId); // Fetch updated list of sessions after deletion
       setShowForm(false);
       setSelectedSession(null);
-      window.location.reload();
     } catch (error) {
       console.error("Error deleting session:", error);
+      alert(
+        "An error occurred while deleting the session. Please try again later."
+      );
     }
+  };
+
+  const validateInputs = () => {
+    // Validate session name length
+    if (sessionName.length < 5 || sessionName.length > 20) {
+      alert("Session name should be between 5 and 20 characters long.");
+      return false;
+    }
+
+    // Validate location length
+    if (location.length < 5 || location.length > 100) {
+      alert("Location should be between 5 and 100 characters long.");
+      return false;
+    }
+
+    // Validate experience length
+    if (experience.length < 10 || experience.length > 100) {
+      alert("Experience should be between 5 and 100 characters long.");
+      return false;
+    }
+
+    // Validate duration
+    if (duration > 8) {
+      alert("Ensure your session is not too long!");
+      return false;
+    }
+
+    // Validate date
+    const currentDate = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+    if (date < currentDate) {
+      alert("Please select a date in the future.");
+      return false;
+    }
+    if (date > maxDate) {
+      alert("Please select a date within one year from today.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validate form inputs before submission
+    if (
+      !sessionName ||
+      !location ||
+      !date ||
+      !time ||
+      !duration ||
+      !maxParticipants ||
+      !experience
+    ) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    if (!validateInputs()) {
+      return;
+    }
+
+    handleAddSession();
   };
 
   const handleUpdateSession = async () => {
     try {
       const userId = localStorage.getItem("userId");
+      // Validate inputs
+      if (!validateInputs()) {
+        return;
+      }
+
       await axios.put(
-        `http://localhost:8081/volunteers/${selectedSession.SessionID}`,
+        `https://express-backend-plum.vercel.app/volunteers/${selectedSession.SessionID}`,
         {
           SessionName: sessionName,
           Location: location,
@@ -146,9 +221,10 @@ const Organization = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission if needed
+  const handleInputChange = (setter, value) => {
+    // Trim leading and trailing whitespace from the input value
+    const trimmedValue = value.trim();
+    setter(trimmedValue);
   };
 
   return (
@@ -233,7 +309,7 @@ const Organization = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="location" className="form-label">
+            <label htmlFor="Location:" className="form-label">
               Location:
             </label>
             <input
@@ -279,11 +355,11 @@ const Organization = () => {
               Duration:
             </label>
             <input
-              type="text"
+              type="number"
               id="duration"
               className="form-control"
               value={duration}
-              onChange={(e) => setDuration(e.target.value)}
+              onChange={(e) => handleInputChange(setDuration, e.target.value)}
               required
             />
           </div>
@@ -334,7 +410,7 @@ const Organization = () => {
                 </button>
               </>
             ) : (
-              <button className="btn btn-primary" onClick={handleAddSession}>
+              <button className="btn btn-primary" onClick={handleSubmit}>
                 Confirm
               </button>
             )}

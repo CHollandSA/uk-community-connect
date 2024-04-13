@@ -12,7 +12,7 @@ function VolunteerOrg({ setShowOrganizationForm }) {
   const fetchVolunteerSessions = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8081/volunteersessions"
+        "https://express-backend-plum.vercel.app/volunteersessions"
       );
       setVolunteerSessions(response.data);
     } catch (error) {

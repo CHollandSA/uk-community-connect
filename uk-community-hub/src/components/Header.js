@@ -27,13 +27,16 @@ const Header = () => {
 
   const handleLogin = async (username, password) => {
     try {
-      const response = await fetch("http://localhost:8081/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await fetch(
+        "https://express-backend-plum.vercel.app/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -73,21 +76,24 @@ const Header = () => {
     companyName // Add companyName parameter
   ) => {
     try {
-      const response = await fetch("http://localhost:8081/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          surname,
-          username,
-          email,
-          password,
-          isOrganization: isOrganization ? "true" : "false", // Convert to string for consistency
-          companyName, // Pass companyName in the request body
-        }),
-      });
+      const response = await fetch(
+        "https://express-backend-plum.vercel.app/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            surname,
+            username,
+            email,
+            password,
+            isOrganization: isOrganization ? "true" : "false", // Convert to string for consistency
+            companyName, // Pass companyName in the request body
+          }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {

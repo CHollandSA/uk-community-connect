@@ -26,12 +26,25 @@ const Booking = () => {
     setIsLoggedIn(!!userId);
     fetchVolunteers(userId);
     fetchUserSessions(userId);
+    fetchData();
   }, []);
+
+  // Example function to fetch data from backend
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://express-backend-plum.vercel.app/users"
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const fetchVolunteers = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8081/volunteers/${userId}`
+        `https://express-backend-plum.vercel.app/volunteers/${userId}`
       );
       // Filter the response data to include only approved sessions
       const approvedSessions = response.data.filter(
@@ -46,7 +59,7 @@ const Booking = () => {
   const fetchUserSessions = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8081/booked-sessions/${userId}`
+        `https://express-backend-plum.vercel.app/booked-sessions/${userId}`
       );
       setUserSessions(response.data);
     } catch (error) {
@@ -57,10 +70,13 @@ const Booking = () => {
   const handleBookSession = async () => {
     try {
       for (const sessionId of selectedSessionIds) {
-        await axios.post("http://localhost:8081/session-signup", {
-          sessionId,
-          userId,
-        });
+        await axios.post(
+          "https://express-backend-plum.vercel.app/session-signup",
+          {
+            sessionId,
+            userId,
+          }
+        );
       }
       console.log("Sessions booked successfully");
       setSelectedSessionIds([]);
@@ -74,10 +90,13 @@ const Booking = () => {
   const handleCancelSession = async () => {
     try {
       for (const sessionId of selectedSessionIds) {
-        await axios.post("http://localhost:8081/session-cancellation", {
-          sessionId,
-          userId,
-        });
+        await axios.post(
+          "https://express-backend-plum.vercel.app/session-cancellation",
+          {
+            sessionId,
+            userId,
+          }
+        );
       }
       console.log("Deleted booking successfully");
       setSelectedSessionIds([]);

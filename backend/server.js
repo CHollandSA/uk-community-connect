@@ -8,6 +8,10 @@ const port = 8081;
 app.use(cors());
 app.use(express.json());
 
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+});
+
 const db = mysql.createConnection({
   host: "sql8.freesqldatabase.com",
   user: "sql8680787",
@@ -39,6 +43,39 @@ app.get("/users/:username", (req, res) => {
     } else {
       return res.status(404).json({ error: "User not found" });
     }
+  });
+});
+
+// Add this route handler for fetching users and deleting user records
+app.get("/users", (req, res) => {
+  const sql = `
+    SELECT * FROM users
+  `;
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error("Error fetching users:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    return res.status(200).json(data);
+  });
+});
+
+app.delete("/users/:userId", (req, res) => {
+  const userId = req.params.userId;
+
+  const sql = `
+    DELETE FROM users
+    WHERE UserID = ?
+  `;
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error("Error deleting user:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    console.log("User deleted successfully");
+    return res.status(200).json({ message: "User deleted successfully" });
   });
 });
 
@@ -376,6 +413,4 @@ app.get("/booked-sessions/:userId", (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server started on http://localhost:${port}`);
-});
+module.exports = app;

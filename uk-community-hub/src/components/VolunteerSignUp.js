@@ -15,23 +15,26 @@ function VolunteerSignUp({ setShowForm }) {
     const userId = localStorage.getItem("userId");
 
     try {
-      const response = await fetch("http://localhost:8081/volunteers", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "user-id": userId, // Pass userId in the headers
-        },
-        body: JSON.stringify({
-          sessionName,
-          location,
-          date,
-          time,
-          duration,
-          maxParticipants,
-          experience,
-          host: "Individual",
-        }),
-      });
+      const response = await fetch(
+        "https://express-backend-plum.vercel.app/volunteers",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": userId, // Pass userId in the headers
+          },
+          body: JSON.stringify({
+            sessionName,
+            location,
+            date,
+            time,
+            duration,
+            maxParticipants,
+            experience,
+            host: "Individual",
+          }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {

@@ -6,9 +6,11 @@ const Admin = () => {
   const [volunteerSessions, setVolunteerSessions] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     fetchVolunteerSessions();
+    fetchUsers();
     const userId = localStorage.getItem("userId");
     setIsLoggedIn(!!userId);
   }, []);
@@ -16,11 +18,22 @@ const Admin = () => {
   const fetchVolunteerSessions = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8081/volunteers/unapproved"
+        "https://express-backend-plum.vercel.app/volunteers/unapproved"
       );
       setVolunteerSessions(response.data);
     } catch (error) {
       console.error("Error fetching volunteer sessions:", error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "https://express-backend-plum.vercel.app/users"
+      );
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
     }
   };
 
@@ -32,25 +45,43 @@ const Admin = () => {
     if (!selectedRow) return; // Ensure a row is selected
     try {
       await axios.put(
-        `http://localhost:8081/volunteers/${selectedRow}/approve`
+        `https://express-backend-plum.vercel.app/volunteers/${selectedRow}/approve`
       );
-      fetchVolunteerSessions(); // Refresh table data after approval
+      fetchVolunteerSessions();
     } catch (error) {
       console.error("Error approving session:", error);
     } finally {
-      setSelectedRow(null); // Clear selected row
+      setSelectedRow(null);
     }
   };
 
   const handleDeny = async () => {
     if (!selectedRow) return; // Ensure a row is selected
     try {
-      await axios.delete(`http://localhost:8081/volunteers/${selectedRow}`);
+      await axios.delete(
+        `https://express-backend-plum.vercel.app/volunteers/${selectedRow}`
+      );
       fetchVolunteerSessions(); // Refresh table data after denial
     } catch (error) {
       console.error("Error denying session:", error);
     } finally {
       setSelectedRow(null); // Clear selected row
+    }
+  };
+
+  const handleUserDelete = async (userId) => {
+    try {
+      if (!userId) {
+        console.error("User ID is undefined");
+        return;
+      }
+
+      await axios.delete(
+        `https://express-backend-plum.vercel.app/users/${userId}`
+      );
+      fetchUsers(); // Refresh user data after deletion
+    } catch (error) {
+      console.error("Error deleting user:", error);
     }
   };
 
@@ -79,10 +110,7 @@ const Admin = () => {
         </div>
         <h4 className="booking-sub">Available Sessions</h4>
         {volunteerSessions.length > 0 ? (
-          <div
-            className="table-responsive"
-            style={{ maxHeight: "400px", overflowY: "auto" }}
-          >
+          <div className="table-responsive">
             <table className="table table-striped">
               <thead>
                 <tr>
@@ -132,6 +160,44 @@ const Admin = () => {
               Deny
             </button>
           </div>
+        )}
+      </div>
+      <div>
+        <h4 className="booking-sub">Users</h4>
+        {users.length > 0 ? (
+          <div className="table-responsive">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.UserID}</td>
+                    <td>{`${user.FirstName} ${user.LastName}`}</td>
+                    <td>{user.UserName}</td>
+                    <td>{user.Email}</td>
+                    <td>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleUserDelete(user.UserID)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>No users available</p>
         )}
       </div>
     </div>
