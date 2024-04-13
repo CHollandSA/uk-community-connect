@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 
 function VolunteerSignUp({ setShowForm }) {
+  // State variables to manage form input values
   const [sessionName, setSessionName] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
@@ -10,40 +11,45 @@ function VolunteerSignUp({ setShowForm }) {
   const [maxParticipants, setMaxParticipants] = useState("");
   const [experience, setExperience] = useState("");
 
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     const userId = localStorage.getItem("userId");
 
     try {
-      const response = await fetch(
-        "https://express-backend-plum.vercel.app/volunteers",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "user-id": userId, // Pass userId in the headers
-          },
-          body: JSON.stringify({
-            sessionName,
-            location,
-            date,
-            time,
-            duration,
-            maxParticipants,
-            experience,
-            host: "Individual",
-          }),
-        }
-      );
+      // Send a POST request to the backend API with form data
+      const response = await fetch("http://localhost:8081/volunteers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "user-id": userId, // Pass userId in the headers
+        },
+        body: JSON.stringify({
+          sessionName,
+          location,
+          date,
+          time,
+          duration,
+          maxParticipants,
+          experience,
+          host: "Individual",
+        }),
+      });
 
+      // Parse response data
       const data = await response.json();
+      // If the response is successful, show success message and close form
       if (response.ok) {
         console.log(data.message);
+        window.alert(
+          "Session successfully sent off for approval!Check back in a few days"
+        );
         setShowForm(false);
       } else {
         console.error(data.error);
       }
     } catch (error) {
+      // Log any errors that occur during the submission process
       console.error("Error submitting data:", error);
     }
   };

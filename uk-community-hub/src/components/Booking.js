@@ -10,43 +10,34 @@ const Booking = () => {
   const [userId, setUserId] = useState(null);
   const [userSessions, setUserSessions] = useState([]);
 
+  // Popover content for explaining how to use the booking section
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Information</Popover.Header>
+      <Popover.Header as="h3">Booking Info</Popover.Header>
       <Popover.Body>
-        Throughout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
+        To book a session, simply browse through the available sessions and
+        click on the "Book" button once you have selected the session you wish
+        to attend. Once booked, the session will appear in your booked sessions
+        list where you can view the details and cancel if necessary.{" "}
       </Popover.Body>
     </Popover>
   );
 
   useEffect(() => {
+    // Fetches user ID from local storage and updates state
     const userId = localStorage.getItem("userId");
     setUserId(userId);
     setIsLoggedIn(!!userId);
     fetchVolunteers(userId);
     fetchUserSessions(userId);
-    fetchData();
   }, []);
 
-  // Example function to fetch data from backend
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://express-backend-plum.vercel.app/users"
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   const fetchVolunteers = async (userId) => {
+    // Fetches volunteer sessions from the backend and updates state
     try {
       const response = await axios.get(
-        `https://express-backend-plum.vercel.app/volunteers/${userId}`
+        `http://localhost:8081/volunteers/${userId}`
       );
-      // Filter the response data to include only approved sessions
       const approvedSessions = response.data.filter(
         (session) => session.approved === 1
       );
@@ -57,9 +48,10 @@ const Booking = () => {
   };
 
   const fetchUserSessions = async (userId) => {
+    // Fetches sessions booked by the user from the backend and updates state
     try {
       const response = await axios.get(
-        `https://express-backend-plum.vercel.app/booked-sessions/${userId}`
+        `http://localhost:8081/booked-sessions/${userId}`
       );
       setUserSessions(response.data);
     } catch (error) {
@@ -68,46 +60,43 @@ const Booking = () => {
   };
 
   const handleBookSession = async () => {
+    // Handles booking sessions by sending a POST request to the backend
     try {
       for (const sessionId of selectedSessionIds) {
-        await axios.post(
-          "https://express-backend-plum.vercel.app/session-signup",
-          {
-            sessionId,
-            userId,
-          }
-        );
+        await axios.post("http://localhost:8081/session-signup", {
+          sessionId,
+          userId,
+        });
       }
       console.log("Sessions booked successfully");
       setSelectedSessionIds([]);
       fetchVolunteers(userId); // Refresh the sessions after booking
-      fetchUserSessions(userId); // same as above
+      fetchUserSessions(userId); // Refresh user sessions after booking
     } catch (error) {
       console.error("Error booking sessions:", error);
     }
   };
 
   const handleCancelSession = async () => {
+    // Handles canceling sessions by sending a POST request to the backend
     try {
       for (const sessionId of selectedSessionIds) {
-        await axios.post(
-          "https://express-backend-plum.vercel.app/session-cancellation",
-          {
-            sessionId,
-            userId,
-          }
-        );
+        await axios.post("http://localhost:8081/session-cancellation", {
+          sessionId,
+          userId,
+        });
       }
       console.log("Deleted booking successfully");
       setSelectedSessionIds([]);
-      fetchVolunteers(userId); // Refresh the sessions after booking
-      fetchUserSessions(userId); // same as above
+      fetchVolunteers(userId); // Refresh the sessions after canceling
+      fetchUserSessions(userId); // Refresh user sessions after canceling
     } catch (error) {
       console.error("Error cancelling sessions:", error);
     }
   };
 
   const handleCheckboxChange = (sessionId) => {
+    // Handles checkbox change event by updating selected session IDs
     setSelectedSessionIds((prevIds) =>
       prevIds.includes(sessionId)
         ? prevIds.filter((id) => id !== sessionId)
@@ -117,6 +106,7 @@ const Booking = () => {
 
   return (
     <div className="booking">
+      {/* Booking section header with popover */}
       <div className="div-heading">
         <h2>Booking</h2>{" "}
         <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
@@ -127,11 +117,23 @@ const Booking = () => {
           />
         </OverlayTrigger>
       </div>
+      {/* Information about booking sessions */}
+      <p>
+        The available sessions section allows users to book sessions they would
+        like to attend. Once signed in, users can use the booked sessions
+        section to view the sessions they have booked and cancel them if needed.
+        If no sessions are currently available, users are encouraged to check
+        back within 24 hours for newly added sessions. Please note that the
+        ability to book and cancel sessions is only available to signed-in
+        users.
+      </p>
+      {/* Render booked sessions if user is logged in */}
       {isLoggedIn && (
         <>
           <h4 className="booking-sub">Booked Sessions</h4>
           {userSessions.length > 0 ? (
             <>
+              {/* Table of booked sessions */}
               <div className="table-responsive">
                 <table className="table table-striped">
                   <thead>
@@ -165,6 +167,7 @@ const Booking = () => {
                   </tbody>
                 </table>
               </div>
+              {/* Button to remove booked sessions */}
               <button
                 className="btn btn-danger m-1"
                 onClick={handleCancelSession}
@@ -177,6 +180,7 @@ const Booking = () => {
           )}
         </>
       )}
+      {/* Available sessions section */}
       <h4 className="booking-sub">Available Sessions</h4>
       {volunteerSessions.length > 0 ? (
         <div className="table-responsive">
@@ -209,6 +213,7 @@ const Booking = () => {
               ))}
             </tbody>
           </table>
+          {/* Button to book sessions */}
           {isLoggedIn && (
             <button className="btn btn-primary" onClick={handleBookSession}>
               Book

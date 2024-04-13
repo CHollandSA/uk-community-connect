@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "./Booking.css";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import axios from "axios"; // Importing axios for making HTTP requests
+import "./Booking.css"; // Importing styles for the component
+import { OverlayTrigger, Popover } from "react-bootstrap"; // Importing components from react-bootstrap
 
+// Organization component definition
 const Organization = () => {
-  const [volunteerSessions, setVolunteerSessions] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedSession, setSelectedSession] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  // State variables to manage component state
+  const [volunteerSessions, setVolunteerSessions] = useState([]); // State to store volunteer sessions
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track user login status
+  const [selectedSession, setSelectedSession] = useState(null); // State to store the selected session
+  const [showForm, setShowForm] = useState(false); // State to control the visibility of the form
 
+  // State variables to store form input values
   const [sessionName, setSessionName] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
@@ -17,27 +20,34 @@ const Organization = () => {
   const [maxParticipants, setMaxParticipants] = useState("");
   const [experience, setExperience] = useState("");
 
+  // Popover content
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Information</Popover.Header>
+      <Popover.Header as="h3">Organization</Popover.Header>
       <Popover.Body>
-        Throughout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
+        Upon successful login, users with organization privileges are shown a
+        table displaying the sessions they have created. They can also add new
+        sessions by filling out a form with session details and clicking the
+        confirm button. They may also edit and delete sessions they have
+        already.
       </Popover.Body>
     </Popover>
   );
 
+  // Fetch volunteer sessions and update state when component mounts
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    setIsLoggedIn(!!userId);
-    fetchVolunteers(userId);
+    const userId = localStorage.getItem("userId"); // Get user ID from local storage
+    setIsLoggedIn(!!userId); // Update login status
+    fetchVolunteers(userId); // Fetch volunteer sessions
   }, []);
 
+  // Function to fetch volunteer sessions from the backend
   const fetchVolunteers = async (userId) => {
     try {
       const response = await axios.get(
-        `https://express-backend-plum.vercel.app/volunteers/${userId}`
-      );
+        `http://localhost:8081/volunteers/${userId}`
+      ); // Fetch sessions for the current user
+      // Format session dates and filter sessions for organization
       const formattedSessions = response.data.map((session) => ({
         ...session,
         Date: new Date(session.Date).toISOString().split("T")[0], // Format the date string
@@ -47,15 +57,17 @@ const Organization = () => {
           session.Host === "Organization" &&
           session.OrganizerID === parseInt(userId)
       );
-      setVolunteerSessions(filteredSessions);
+      setVolunteerSessions(filteredSessions); // Update volunteer sessions state
     } catch (error) {
-      console.error(error);
+      console.error(error); // Log any errors
     }
   };
 
+  // Function to handle selection of a session
   const handleSelectSession = (session) => {
-    setSelectedSession(session);
-    setShowForm(true);
+    setSelectedSession(session); // Set the selected session
+    setShowForm(true); // Show the form
+    // Set form input values to the selected session details
     setSessionName(session.SessionName);
     setLocation(session.Location);
     setDate(session.Date);
@@ -65,24 +77,13 @@ const Organization = () => {
     setExperience(session.Experience);
   };
 
+  // Function to add a new session
   const handleAddSession = async () => {
     try {
-      const userId = localStorage.getItem("userId");
-      // Log the session data before making the POST request
-      console.log("Adding session:", {
-        SessionName: sessionName,
-        Location: location,
-        Date: date,
-        Time: time,
-        Duration: duration,
-        MaxParticipants: maxParticipants,
-        OrganizerID: userId, // Use userId from localStorage
-        Experience: experience,
-        Host: "Organization",
-      });
-
+      const userId = localStorage.getItem("userId"); // Get user ID from local storage
+      // Make a POST request to add the session
       await axios.post(
-        "https://express-backend-plum.vercel.app/volunteers",
+        "http://localhost:8081/volunteers",
         {
           sessionName: sessionName,
           location: location,
@@ -95,63 +96,64 @@ const Organization = () => {
         },
         {
           headers: {
-            "user-id": userId, // Pass userId in headers
+            "user-id": userId, // Pass user ID in headers
           },
         }
       );
-      fetchVolunteers(userId);
-      setShowForm(false);
+      fetchVolunteers(userId); // Fetch updated list of sessions
+      setShowForm(false); // Hide the form
     } catch (error) {
-      console.error("Error adding session:", error);
+      console.error("Error adding session:", error); // Log any errors
     }
   };
 
+  // Function to delete a session
   const handleDeleteSession = async () => {
     try {
       if (!selectedSession) {
-        console.error("No session selected for deletion.");
+        console.error("No session selected for deletion."); // Log an error if no session is selected
         return;
       }
+      // Make a DELETE request to delete the selected session
       await axios.delete(
-        `https://express-backend-plum.vercel.app/volunteers/${selectedSession.SessionID}`
+        `http://localhost:8081/volunteers/${selectedSession.SessionID}`
       );
-      const userId = localStorage.getItem("userId");
+      const userId = localStorage.getItem("userId"); // Get user ID from local storage
       fetchVolunteers(userId); // Fetch updated list of sessions after deletion
-      setShowForm(false);
-      setSelectedSession(null);
+      setShowForm(false); // Hide the form
+      setSelectedSession(null); // Reset selected session
     } catch (error) {
-      console.error("Error deleting session:", error);
+      console.error("Error deleting session:", error); // Log any errors
       alert(
         "An error occurred while deleting the session. Please try again later."
-      );
+      ); // Show an alert message
     }
   };
 
+  // Function to validate form inputs
   const validateInputs = () => {
     // Validate session name length
-    if (sessionName.length < 5 || sessionName.length > 20) {
-      alert("Session name should be between 5 and 20 characters long.");
+    if (sessionName.length < 3 || sessionName.length > 20) {
+      alert(
+        "Session name should be between 5 and 20 characters long.\nThere is more space in the Experience section"
+      );
       return false;
     }
-
     // Validate location length
     if (location.length < 5 || location.length > 100) {
       alert("Location should be between 5 and 100 characters long.");
       return false;
     }
-
     // Validate experience length
     if (experience.length < 10 || experience.length > 100) {
       alert("Experience should be between 5 and 100 characters long.");
       return false;
     }
-
     // Validate duration
     if (duration > 8) {
       alert("Ensure your session is not too long!");
       return false;
     }
-
     // Validate date
     const currentDate = new Date();
     const maxDate = new Date();
@@ -164,12 +166,12 @@ const Organization = () => {
       alert("Please select a date within one year from today.");
       return false;
     }
-
-    return true;
+    return true; // Return true if all validations pass
   };
 
+  // Function to handle form submission
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
     // Validate form inputs before submission
     if (
       !sessionName ||
@@ -180,27 +182,26 @@ const Organization = () => {
       !maxParticipants ||
       !experience
     ) {
-      alert("Please fill in all fields.");
+      alert("Please fill in all fields."); // Show an alert message if any field is empty
       return;
     }
-
     if (!validateInputs()) {
-      return;
+      return; // Stop form submission if inputs are invalid
     }
-
-    handleAddSession();
+    handleAddSession(); // Call handleAddSession to add the session
   };
 
+  // Function to handle session update
   const handleUpdateSession = async () => {
     try {
-      const userId = localStorage.getItem("userId");
+      const userId = localStorage.getItem("userId"); // Get user ID from local storage
       // Validate inputs
       if (!validateInputs()) {
-        return;
+        return; // Stop update if inputs are invalid
       }
-
+      // Make a PUT request to update the selected session
       await axios.put(
-        `https://express-backend-plum.vercel.app/volunteers/${selectedSession.SessionID}`,
+        `http://localhost:8081/volunteers/${selectedSession.SessionID}`,
         {
           SessionName: sessionName,
           Location: location,
@@ -208,25 +209,26 @@ const Organization = () => {
           Time: time,
           Duration: duration,
           MaxParticipants: maxParticipants,
-          OrganizerID: userId, // Use userId from localStorage
+          OrganizerID: userId, // Use user ID from local storage
           Experience: experience,
           Host: "Organization",
         }
       );
-      fetchVolunteers(userId);
-      setShowForm(false);
-      setSelectedSession(null);
+      fetchVolunteers(userId); // Fetch updated list of sessions
+      setShowForm(false); // Hide the form
+      setSelectedSession(null); // Reset selected session
     } catch (error) {
-      console.error("Error updating session:", error);
+      console.error("Error updating session:", error); // Log any errors
     }
   };
 
+  // Function to handle input change and trim leading/trailing whitespace
   const handleInputChange = (setter, value) => {
-    // Trim leading and trailing whitespace from the input value
-    const trimmedValue = value.trim();
-    setter(trimmedValue);
+    const trimmedValue = value.trim(); // Trim leading and trailing whitespace
+    setter(trimmedValue); // Set the trimmed value using the provided setter function
   };
 
+  // JSX for the Organization component
   return (
     <div className="booking">
       <div className="div-heading">
@@ -239,7 +241,7 @@ const Organization = () => {
           />
         </OverlayTrigger>
       </div>
-      <h4 className="booking-sub">Available Sessions</h4>
+      <h4 className="booking-sub">Your Sessions</h4>
 
       <div>
         <div className="table-responsive">
@@ -253,6 +255,7 @@ const Organization = () => {
               </tr>
             </thead>
             <tbody>
+              {/* Render volunteer sessions */}
               {volunteerSessions.map((session, index) => (
                 <tr key={index}>
                   <td>{session.SessionID}</td>
@@ -260,6 +263,7 @@ const Organization = () => {
                   <td>{session.Date}</td>
                   {isLoggedIn && (
                     <td>
+                      {/* Button to select a session */}
                       <button
                         className="btn btn-primary"
                         onClick={() => handleSelectSession(session)}
@@ -272,11 +276,13 @@ const Organization = () => {
               ))}
             </tbody>
           </table>
+          {/* Button to add a new session */}
           <button
             type="button"
             className="btn btn-primary mt-3"
             onClick={() => {
-              setShowForm(true);
+              setShowForm(true); // Show the form
+              // Reset form input values and selected session
               setSessionName("");
               setLocation("");
               setDate("");
@@ -292,8 +298,10 @@ const Organization = () => {
         </div>
       </div>
 
+      {/* Form to add/update session */}
       {showForm && (
         <form onSubmit={handleSubmit} className="form">
+          {/* Session Name input */}
           <div className="mb-3">
             <label htmlFor="sessionName" className="form-label">
               Session Name:
@@ -308,6 +316,7 @@ const Organization = () => {
             />
           </div>
 
+          {/* Location input */}
           <div className="mb-3">
             <label htmlFor="Location:" className="form-label">
               Location:
@@ -322,6 +331,7 @@ const Organization = () => {
             />
           </div>
 
+          {/* Date input */}
           <div className="mb-3">
             <label htmlFor="date" className="form-label">
               Date:
@@ -336,6 +346,7 @@ const Organization = () => {
             />
           </div>
 
+          {/* Time input */}
           <div className="mb-3">
             <label htmlFor="time" className="form-label">
               Time:
@@ -350,6 +361,7 @@ const Organization = () => {
             />
           </div>
 
+          {/* Duration input */}
           <div className="mb-3">
             <label htmlFor="duration" className="form-label">
               Duration:
@@ -364,6 +376,7 @@ const Organization = () => {
             />
           </div>
 
+          {/* Max Participants input */}
           <div className="mb-3">
             <label htmlFor="maxParticipants" className="form-label">
               Max Participants:
@@ -378,6 +391,7 @@ const Organization = () => {
             />
           </div>
 
+          {/* Experience input */}
           <div className="mb-3">
             <label htmlFor="experience" className="form-label">
               Experience:
@@ -391,9 +405,11 @@ const Organization = () => {
             />
           </div>
 
+          {/* Action buttons */}
           <div className="mb-3">
-            {selectedSession ? (
+            {selectedSession ? ( // Conditional rendering based on selected session
               <>
+                {/* Delete and Update buttons for existing session */}
                 <button
                   type="button"
                   className="btn btn-danger me-2"
@@ -410,10 +426,12 @@ const Organization = () => {
                 </button>
               </>
             ) : (
+              // Confirm button for adding a new session
               <button className="btn btn-primary" onClick={handleSubmit}>
                 Confirm
               </button>
             )}
+            {/* Close button to hide the form */}
             <button
               type="button"
               className="btn btn-secondary close-btn"

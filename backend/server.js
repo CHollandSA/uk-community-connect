@@ -156,7 +156,7 @@ app.post("/signup", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body; // Access username and password from request body
 
   const sql = "SELECT * FROM users WHERE UserName = ? AND Password = ?";
   db.query(sql, [username, password], (err, data) => {
@@ -169,7 +169,6 @@ app.post("/login", (req, res) => {
       return res.status(200).json({
         success: true,
         user: {
-          // this is creating a user from the data found and sending it to the front end
           userID: data[0].UserID,
           username: data[0].UserName,
           firstName: data[0].FirstName,

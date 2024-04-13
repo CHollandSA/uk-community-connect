@@ -3,31 +3,39 @@ import axios from "axios";
 import "./App.css";
 
 function VolunteerOrg({ setShowOrganizationForm }) {
+  // State variable to store volunteer sessions
   const [volunteerSessions, setVolunteerSessions] = useState([]);
 
+  // Fetch volunteer sessions when component mounts
   useEffect(() => {
     fetchVolunteerSessions();
   }, []);
 
+  // Function to fetch volunteer sessions from the backend
   const fetchVolunteerSessions = async () => {
     try {
+      // Fetch data from the backend API
       const response = await axios.get(
-        "https://express-backend-plum.vercel.app/volunteersessions"
+        "http://localhost:8081/volunteersessions"
       );
+      // Set the volunteer sessions state with the fetched data
       setVolunteerSessions(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
+  // Function to handle volunteer button click
   const handleVolunteerClick = (sessionName, organization) => {
+    // Show an alert indicating successful volunteer registration
     window.alert(
-      `(This feature is not complete yet. This message is to demonstrate what this feature will do.) You have kindly volunteered to help Organization:${organization} for the session: ${sessionName}`
+      `You have kindly volunteered to help out the organization ${organization} for their session: ${sessionName}`
     );
   };
 
+  // JSX for rendering the volunteer sessions table
   return (
-    <div>
+    <div className="table-responsive">
       <h3>Volunteer Sessions:</h3>
       <table className="table table-striped">
         <thead>
@@ -41,6 +49,7 @@ function VolunteerOrg({ setShowOrganizationForm }) {
           </tr>
         </thead>
         <tbody>
+          {/* Mapping through volunteer sessions and rendering table rows */}
           {volunteerSessions.map((session) => (
             <tr key={session.SessionID}>
               <td>{session.OrganizationName}</td>
@@ -48,6 +57,7 @@ function VolunteerOrg({ setShowOrganizationForm }) {
               <td>{new Date(session.Date).toLocaleDateString("en-GB")}</td>
               <td>{session.Time}</td>
               <td>{session.Location}</td>
+              {/* Volunteer button to register as a volunteer */}
               <td>
                 <button
                   className="btn btn-primary mb-1"
@@ -66,6 +76,7 @@ function VolunteerOrg({ setShowOrganizationForm }) {
         </tbody>
       </table>
 
+      {/* Button to close the volunteer organization form */}
       <button
         className="btn btn-danger"
         onClick={() => setShowOrganizationForm(false)}

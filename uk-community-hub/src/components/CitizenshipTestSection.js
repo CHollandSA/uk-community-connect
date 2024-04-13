@@ -5,12 +5,12 @@ import "./App.css";
 import "./Hero.css";
 
 function CitizenshipTestSection() {
+  //Popover content for explaining citizenship section
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Information</Popover.Header>
+      <Popover.Header as="h3">Citizenship</Popover.Header>
       <Popover.Body>
-        Throughout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
+        This section provides useful information to users and external links.{" "}
       </Popover.Body>
     </Popover>
   );
@@ -18,6 +18,7 @@ function CitizenshipTestSection() {
   return (
     <div className="citizenship">
       <div>
+        {/*Heading and popover for citizenship section*/}
         <div className="div-heading">
           <h2>Citizenship Section</h2>{" "}
           <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
@@ -28,6 +29,7 @@ function CitizenshipTestSection() {
             />
           </OverlayTrigger>
         </div>
+        {/*Section about applying for citizenship in the UK*/}
         <section>
           <h4>
             <u>Applying for Citizenship in the UK</u>

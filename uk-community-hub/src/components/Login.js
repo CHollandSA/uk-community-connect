@@ -1,20 +1,25 @@
 import React, { useState } from "react";
-//import './Login.css';
 import "./App.css";
 
+// Login component definition
 const Login = ({ handleLogin, setShowLogin }) => {
+  // State variables to manage username and password inputs
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Pass the username and password to handleLogin
+    // Call handleLogin function with username and password parameters
     handleLogin(username, password);
+    // Close the login modal after submission
     setShowLogin(false);
   };
 
+  // Return JSX for the Login component
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="login" onSubmit={handleSubmit}>
+      {/* Username input field */}
       <div className="form-group">
         <label htmlFor="username">Username</label>
         <input
@@ -25,6 +30,7 @@ const Login = ({ handleLogin, setShowLogin }) => {
           onChange={(event) => setUsername(event.target.value)}
         />
       </div>
+      {/* Password input field */}
       <div className="form-group">
         <label htmlFor="password">Password</label>
         <input
@@ -35,10 +41,12 @@ const Login = ({ handleLogin, setShowLogin }) => {
           onChange={(event) => setPassword(event.target.value)}
         />
       </div>
+      {/* Login and Close buttons */}
       <div className="btnLogin">
         <button type="submit" className="btn btn-primary">
           Login
         </button>
+        {/* Close button to hide the login modal */}
         <button
           type="button"
           className="btn btn-secondary"

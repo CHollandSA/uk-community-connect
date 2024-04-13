@@ -11,6 +11,7 @@ import Admin from "../components/Admin";
 import "../components/App.css";
 
 const Home = () => {
+  // Retrieve organization status, login status, and admin status from localStorage
   const isOrganization = localStorage.getItem("organization") === "1";
   const isLoggedIn = localStorage.getItem("username") !== null;
   const isAdmin = localStorage.getItem("username") === "admin";
@@ -22,14 +23,31 @@ const Home = () => {
         fontFamily: "Poppins, sans-serif", //"Roboto, sans-serif
       }}
     >
+      {/* Render the Header component */}
       <Header />
+
+      {/* Render the Admin component if the user is an admin */}
       {isAdmin && <Admin />}
+
+      {/* Render the HeroSection component if the user is not an admin */}
       {!isAdmin && <HeroSection />}
+
+      {/* Render the CitizenshipTestSection component if the user is not an admin */}
       {!isAdmin && <CitizenshipTestSection />}
-      {isOrganization && <Organization />}
+
+      {/* Render the Organization component if the user is an organization */}
+      {!isAdmin && isOrganization && <Organization />}
+
+      {/* Render the VolunteerInfo component if the user is logged in and not an admin */}
       {!isAdmin && isLoggedIn && <VolunteerInfo />}
+
+      {/* Render the Booking component if the user is not an admin */}
       {!isAdmin && <Booking />}
+
+      {/* Render the Extra component if the user is not an admin */}
       {!isAdmin && <Extra />}
+
+      {/* Render the Footer component */}
       <Footer />
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 const Signup = ({ handleSignUp, setShowSignUp }) => {
+  // State variables to manage form input values and component state
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
@@ -9,11 +10,13 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [isOrganization, setIsOrganization] = useState(false); // State for checkbox
   const [companyName, setCompanyName] = useState(""); // State for company name
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // State for error message
 
+  // Function to handle form submission
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission behavior
 
+    // Validation checks
     if (
       !name ||
       !surname ||
@@ -31,13 +34,25 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
       return;
     }
 
+    if (
+      password.length <= 6 ||
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password) ||
+      !/\d/.test(password)
+    ) {
+      setError(
+        "Password must be at least 7 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+      );
+      return;
+    }
+
     // Additional validation for company name if signing up as an organization
     if (isOrganization && !companyName) {
       setError("Please provide the company name");
       return;
     }
 
-    // Call the handleSignUp function passed from the parent
+    // Call the handleSignUp function passed from the parent component
     const success = await handleSignUp(
       name,
       surname,
@@ -48,16 +63,20 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
       companyName
     );
 
+    // Handle success or failure of signup attempt
     if (success) {
-      setShowSignUp(false);
+      setShowSignUp(false); // Close the signup form if signup is successful
     } else {
-      setError("Username or email already taken");
+      setError("Username or email already taken"); // Display error message if signup fails
     }
   };
 
+  // JSX for the Signup component
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="sign-up" onSubmit={handleSubmit}>
+      {/* Display error message if there's an error */}
       {error && <p className="errorMessage">Error: {error}</p>}
+      {/* Form input fields */}
       <div className="form-group">
         <label htmlFor="name">Name</label>
         <input
@@ -118,6 +137,7 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
           onChange={(event) => setRepeatPassword(event.target.value)}
         />
       </div>
+      {/* Checkbox for organization signup */}
       <div className="form-group">
         <input
           type="checkbox"
@@ -129,6 +149,7 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
           Are you signing up as part of an organization?
         </label>
       </div>
+      {/* Additional input field for company name if signing up as organization */}
       {isOrganization && (
         <div className="form-group">
           <label htmlFor="companyName">Company Name</label>
@@ -141,6 +162,7 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
           />
         </div>
       )}
+      {/* Form submission and close buttons */}
       <div className="btnLogin">
         <button type="submit" className="btn btn-primary">
           Signup

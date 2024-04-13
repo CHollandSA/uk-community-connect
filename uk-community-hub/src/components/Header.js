@@ -4,20 +4,23 @@ import "./Header.css";
 import Login from "./Login";
 import Signup from "./Signup";
 
+// Header component definition
 const Header = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [showButtons, setShowButtons] = useState(false);
+  // State variables
+  const [showLogin, setShowLogin] = useState(false); // Toggle for displaying login form
+  const [showSignUp, setShowSignUp] = useState(false); // Toggle for displaying signup form
+  const [userName, setUserName] = useState(""); // User's username
+  const [showButtons, setShowButtons] = useState(false); // Toggle for displaying navigation buttons
 
+  // Effect hook to set username from local storage when component mounts
   useEffect(() => {
-    // Set username from local storage when component mounts
     const storedUserName = localStorage.getItem("username");
     if (storedUserName) {
       setUserName(storedUserName);
     }
   }, []);
 
+  // Function to toggle display of navigation buttons
   const toggleButtons = () => {
     setShowButtons(!showButtons);
     // Close login and signup forms when toggling buttons
@@ -25,25 +28,21 @@ const Header = () => {
     setShowSignUp(false);
   };
 
+  // Function to handle login
   const handleLogin = async (username, password) => {
     try {
-      const response = await fetch(
-        "https://express-backend-plum.vercel.app/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        }
-      );
+      const response = await fetch("http://localhost:8081/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Set content type to JSON
+        },
+        body: JSON.stringify({ username, password }), // Convert data to JSON format
+      });
 
       const data = await response.json();
+      let userType;
 
       if (data.success) {
-        console.log(
-          `Welcome back, ${data.user.firstName} ${data.user.lastName} ${data.user.company}!`
-        );
         setUserName(data.user.username);
         localStorage.setItem("username", data.user.username);
         localStorage.setItem("userId", data.user.userID);
@@ -52,20 +51,28 @@ const Header = () => {
         if (data.user.company === 1) {
           // Use the correct property name here
           localStorage.setItem("organization", "1"); // Set organization to '1' if organizerid is '1'
+          userType = "Organization";
         } else {
           localStorage.setItem("organization", "0"); // Otherwise, set organization to '0'
+          userType = "Individual";
         }
 
         // Reload the page after login
         window.location.reload();
+        window.alert(
+          `Welcome back, ${data.user.firstName}!\nYour user type is: ${userType}`
+        );
       } else {
         console.log("User not found");
+        window.alert("Username or password is incorrect");
       }
     } catch (error) {
       console.error("Error making API call:", error);
+      window.alert("Username or password is incorrect");
     }
   };
 
+  // Function to handle signup
   const handleSignUp = async (
     name,
     surname,
@@ -73,31 +80,29 @@ const Header = () => {
     email,
     password,
     isOrganization,
-    companyName // Add companyName parameter
+    companyName
   ) => {
     try {
-      const response = await fetch(
-        "https://express-backend-plum.vercel.app/signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            surname,
-            username,
-            email,
-            password,
-            isOrganization: isOrganization ? "true" : "false", // Convert to string for consistency
-            companyName, // Pass companyName in the request body
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:8081/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          surname,
+          username,
+          email,
+          password,
+          isOrganization: isOrganization ? "true" : "false", // Converted to string for consistency
+          companyName,
+        }),
+      });
 
       const data = await response.json();
       if (response.ok) {
         console.log(data.message);
+        window.alert("You have successfully signed up!\nYou may now sign in.");
         return true;
       } else {
         console.error(data.error);
@@ -108,21 +113,34 @@ const Header = () => {
       return false;
     }
   };
+  // Function to handle logout
   const handleLogout = () => {
-    // Clear username from local storage when logging out
     localStorage.removeItem("username");
     localStorage.removeItem("userId");
     localStorage.removeItem("organization"); // Remove organization from local storage
     setUserName("");
-    // Reload the page after logout
     window.location.reload();
+  };
+
+  // Function to scroll to a specific section
+  const scrollToSection = (section) => {
+    const element = document.querySelector(`.${section}`);
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+      });
+    } else {
+      console.error(`Element with class '${section}' not found.`);
+    }
   };
 
   return (
     <header className="header">
+      {/* Logo and title */}
       <div className="oppositeEndsLine">
         <img src="./images/UKCCLogo.png" alt="UKCC" className="logo" />
         <h1 className="title">UK Community Connect</h1>
+        {/* Toggle buttons for navigation */}
         <div className="showButtons">
           {showButtons ? (
             <img
@@ -144,24 +162,43 @@ const Header = () => {
       </div>
 
       <div className="header-content">
+        {/* Navigation buttons */}
         {showButtons && (
           <div className="container">
             <nav>
               <ul className="nav-list">
                 <li>
-                  <a href="/info">Info</a>
+                  <a
+                    href="#info"
+                    onClick={() => scrollToSection("div-heading")}
+                  >
+                    <u>Info</u>
+                  </a>
                 </li>
                 <li>
-                  <a href="/test">Test</a>
+                  <a
+                    href="#citizenship"
+                    onClick={() => scrollToSection("citizenship")}
+                  >
+                    <u>Citizenship</u>
+                  </a>
                 </li>
                 <li>
-                  <a href="/volunteering">Volunteering</a>
+                  <a
+                    href="#volunteering"
+                    onClick={() => scrollToSection("volunteering")}
+                  >
+                    <u>Volunteer</u>
+                  </a>
                 </li>
                 <li>
-                  <a href="/volunteering">Book</a>
+                  <a href="#booking" onClick={() => scrollToSection("booking")}>
+                    <u>Book</u>
+                  </a>
                 </li>
               </ul>
             </nav>
+            {/* Login, signup, and logout buttons */}
             <div className="container2">
               {!userName ? (
                 <>
@@ -195,12 +232,14 @@ const Header = () => {
       </div>
       <hr className="header-line" />
 
+      {/* Login form */}
       {showLogin && (
         <div>
           <Login handleLogin={handleLogin} setShowLogin={setShowLogin} />
           <hr className="header-line" />
         </div>
       )}
+      {/* Signup form */}
       {showSignUp && (
         <div>
           <Signup handleSignUp={handleSignUp} setShowSignUp={setShowSignUp} />
