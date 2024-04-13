@@ -22,12 +22,12 @@ function VolunteerOrg({ setShowOrganizationForm }) {
 
   const handleVolunteerClick = (sessionName, organization) => {
     window.alert(
-      `(This feature is not complete yet. This message is to demonstrate what this feature will do.) You have kindly volunteered to help Organization:${organization} for the session: ${sessionName}`
+      `You have kindly volunteered to help out the organization ${organization} for their session: ${sessionName}`
     );
   };
 
   return (
-    <div>
+    <div className="table-responsive">
       <h3>Volunteer Sessions:</h3>
       <table className="table table-striped">
         <thead>

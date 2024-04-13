@@ -7,10 +7,9 @@ import "./Hero.css";
 function CitizenshipTestSection() {
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Information</Popover.Header>
+      <Popover.Header as="h3">Citizenship</Popover.Header>
       <Popover.Body>
-        Throughout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
+        This section provides useful information to users and external links.{" "}
       </Popover.Body>
     </Popover>
   );

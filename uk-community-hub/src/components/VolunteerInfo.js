@@ -4,7 +4,7 @@ import VolunteerSignUp from "./VolunteerSignUp";
 import VolunteerOrg from "./VolunteerOrg";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
-const VolunteerList = () => {
+const VolunteerInfo = () => {
   const [showIndividualForm, setShowIndividualForm] = useState(false);
   const [showOrganizationForm, setShowOrganizationForm] = useState(false);
 
@@ -15,10 +15,34 @@ const VolunteerList = () => {
 
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Information</Popover.Header>
+      <Popover.Header as="h3">Information on how to volunteer</Popover.Header>
       <Popover.Body>
-        Throughtout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
+        The Volunteer Services Section provides users with the opportunity to
+        offer their services to the system. Here's how to use it:
+        <br />
+        <br />
+        1. Locate and click on the "Offer a Service" button to access the
+        Volunteer Services Section.
+        <br />
+        2. Fill out the necessary information about the session you wish to
+        offer. Be sure to provide detailed information to increase the
+        likelihood of approval by the admin.
+        <br />
+        3. Once you've filled out the information, click submit.
+        <br />
+        4. Your session will be reviewed by the admin. If approved, it will be
+        made available for other users to book.
+        <br />
+        <br />
+        Alternatively, users can volunteer with organizations by following these
+        steps:
+        <br />
+        1. Click on the "Volunteer with an Organization" button.
+        <br />
+        2. Explore the available sessions hosted by various organizations.
+        <br />
+        3. Select the session you are interested in volunteering for by clicking
+        the "Volunteer" button.
       </Popover.Body>
     </Popover>
   );
@@ -36,6 +60,20 @@ const VolunteerList = () => {
             />
           </OverlayTrigger>
         </div>
+        <p>
+          This section allows users to offer sessions to the system. These
+          sessions, hosted by the volunteers themselves, can be booked by
+          users(immigrants, language learners, and citizenship seekers) once
+          approved by an admin. Volunteers should provide detailed information
+          to increase the likelihood of approval. If insufficient information is
+          provided, the admin may deny the session.
+        </p>
+        <p>
+          Additionally, users can choose to offer their assistance to larger
+          organizations. By volunteering with an organization, users can
+          contribute to their sessions and events, providing support and
+          assistance where needed.
+        </p>
         <button
           className="btn btn-primary"
           onClick={() => {
@@ -43,7 +81,7 @@ const VolunteerList = () => {
             setShowOrganizationForm(false);
           }}
         >
-          Volunteer
+          Offer a Volunteer Session
         </button>
         <button className="btn btn-primary" onClick={showOrganizationOptions}>
           Volunteer with an Organization
@@ -61,4 +99,4 @@ const VolunteerList = () => {
   );
 };
 
-export default VolunteerList;
+export default VolunteerInfo;

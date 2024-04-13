@@ -31,6 +31,18 @@ const Signup = ({ handleSignUp, setShowSignUp }) => {
       return;
     }
 
+    if (
+      password.length <= 6 ||
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password) ||
+      !/\d/.test(password)
+    ) {
+      setError(
+        "Password must be at least 7 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+      );
+      return;
+    }
+
     // Additional validation for company name if signing up as an organization
     if (isOrganization && !companyName) {
       setError("Please provide the company name");

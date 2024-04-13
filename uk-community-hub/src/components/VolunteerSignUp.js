@@ -39,6 +39,9 @@ function VolunteerSignUp({ setShowForm }) {
       const data = await response.json();
       if (response.ok) {
         console.log(data.message);
+        window.alert(
+          "Session successfully sent off for approval!Check back in a few days"
+        );
         setShowForm(false);
       } else {
         console.error(data.error);

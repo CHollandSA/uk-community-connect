@@ -26,7 +26,7 @@ const Home = () => {
       {isAdmin && <Admin />}
       {!isAdmin && <HeroSection />}
       {!isAdmin && <CitizenshipTestSection />}
-      {isOrganization && <Organization />}
+      {!isAdmin && isOrganization && <Organization />}
       {!isAdmin && isLoggedIn && <VolunteerInfo />}
       {!isAdmin && <Booking />}
       {!isAdmin && <Extra />}

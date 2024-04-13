@@ -10,15 +10,18 @@ const Booking = () => {
   const [userId, setUserId] = useState(null);
   const [userSessions, setUserSessions] = useState([]);
 
-  const popover = (
-    <Popover id="popover-basic">
-      <Popover.Header as="h3">Information</Popover.Header>
-      <Popover.Body>
-        Throughout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
-      </Popover.Body>
-    </Popover>
-  );
+  const popover = // this popoover tells the user how to use the booking section
+    (
+      <Popover id="popover-basic">
+        <Popover.Header as="h3">Booking Info</Popover.Header>
+        <Popover.Body>
+          To book a session, simply browse through the available sessions and
+          click on the "Book" button once you have selected the session you wish
+          to attend. Once booked, the session will appear in your booked
+          sessions list where you can view the details and cancel if necessary.{" "}
+        </Popover.Body>
+      </Popover>
+    );
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -26,28 +29,15 @@ const Booking = () => {
     setIsLoggedIn(!!userId);
     fetchVolunteers(userId);
     fetchUserSessions(userId);
-    fetchData();
   }, []);
-
-  // Example function to fetch data from backend
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://express-backend-plum.vercel.app/users"
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   const fetchVolunteers = async (userId) => {
     try {
       const response = await axios.get(
         `https://express-backend-plum.vercel.app/volunteers/${userId}`
       );
-      // Filter the response data to include only approved sessions
       const approvedSessions = response.data.filter(
+        // Filters the response data to include only approved sessions. Choosing to filter what is fetched was easier than writing a new sql statement
         (session) => session.approved === 1
       );
       setVolunteerSessions(approvedSessions);
@@ -57,6 +47,7 @@ const Booking = () => {
   };
 
   const fetchUserSessions = async (userId) => {
+    // fetches all the sessions booked by the current user who is logged in. Does this by using  the userId stored in local storage
     try {
       const response = await axios.get(
         `https://express-backend-plum.vercel.app/booked-sessions/${userId}`
@@ -127,6 +118,15 @@ const Booking = () => {
           />
         </OverlayTrigger>
       </div>
+      <p>
+        The available sessions section allows users to book sessions they would
+        like to attend. Once signed in, users can use the booked sessions
+        section to view the sessions they have booked and cancel them if needed.
+        If no sessions are currently available, users are encouraged to check
+        back within 24 hours for newly added sessions. Please note that the
+        ability to book and cancel sessions is only available to signed-in
+        users.
+      </p>
       {isLoggedIn && (
         <>
           <h4 className="booking-sub">Booked Sessions</h4>

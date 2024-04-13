@@ -19,10 +19,12 @@ const Organization = () => {
 
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Information</Popover.Header>
+      <Popover.Header as="h3">Organization</Popover.Header>
       <Popover.Body>
-        Throughout this site you will see info icons like me. Click them to
-        learn more about the section you are on{" "}
+        Upon successful login, users with organization privileges are shown a
+        table displaying the sessions they have created. They can also add new
+        sessions by filling out a form with session details and clicking the
+        confirm button.They may also edit and delete sessions they have already.
       </Popover.Body>
     </Popover>
   );
@@ -239,7 +241,7 @@ const Organization = () => {
           />
         </OverlayTrigger>
       </div>
-      <h4 className="booking-sub">Available Sessions</h4>
+      <h4 className="booking-sub">Your Sessions</h4>
 
       <div>
         <div className="table-responsive">

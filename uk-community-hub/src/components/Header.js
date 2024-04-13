@@ -5,6 +5,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 
 const Header = () => {
+  //these variables store
   const [showLogin, setShowLogin] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [userName, setUserName] = useState("");
@@ -28,22 +29,13 @@ const Header = () => {
   const handleLogin = async (username, password) => {
     try {
       const response = await fetch(
-        "https://express-backend-plum.vercel.app/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        }
+        `https://express-backend-plum.vercel.app/login/${username}/${password}`
       );
 
       const data = await response.json();
+      let userType;
 
       if (data.success) {
-        console.log(
-          `Welcome back, ${data.user.firstName} ${data.user.lastName} ${data.user.company}!`
-        );
         setUserName(data.user.username);
         localStorage.setItem("username", data.user.username);
         localStorage.setItem("userId", data.user.userID);
@@ -52,12 +44,17 @@ const Header = () => {
         if (data.user.company === 1) {
           // Use the correct property name here
           localStorage.setItem("organization", "1"); // Set organization to '1' if organizerid is '1'
+          userType = "Organization";
         } else {
           localStorage.setItem("organization", "0"); // Otherwise, set organization to '0'
+          userType = "Individual";
         }
 
         // Reload the page after login
         window.location.reload();
+        window.alert(
+          `Welcome back, ${data.user.firstName}!\nYour user type is: ${userType}`
+        );
       } else {
         console.log("User not found");
       }
@@ -98,6 +95,7 @@ const Header = () => {
       const data = await response.json();
       if (response.ok) {
         console.log(data.message);
+        window.alert("You have successfully signed up!\nYou may now sign in.");
         return true;
       } else {
         console.error(data.error);
@@ -109,13 +107,17 @@ const Header = () => {
     }
   };
   const handleLogout = () => {
-    // Clear username from local storage when logging out
     localStorage.removeItem("username");
     localStorage.removeItem("userId");
     localStorage.removeItem("organization"); // Remove organization from local storage
     setUserName("");
-    // Reload the page after logout
     window.location.reload();
+  };
+
+  const scrollToSection = (section) => {
+    document.querySelector(`.${section}`).scrollIntoView({
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -149,16 +151,33 @@ const Header = () => {
             <nav>
               <ul className="nav-list">
                 <li>
-                  <a href="/info">Info</a>
+                  <a
+                    href="#info"
+                    onClick={() => scrollToSection("div-heading")}
+                  >
+                    <u>Info</u>
+                  </a>
                 </li>
                 <li>
-                  <a href="/test">Test</a>
+                  <a
+                    href="#citizenship"
+                    onClick={() => scrollToSection("citizenship")}
+                  >
+                    <u>Citizenship</u>
+                  </a>
                 </li>
                 <li>
-                  <a href="/volunteering">Volunteering</a>
+                  <a
+                    href="#volunteering"
+                    onClick={() => scrollToSection("volunteering")}
+                  >
+                    <u>Volunteer</u>
+                  </a>
                 </li>
                 <li>
-                  <a href="/volunteering">Book</a>
+                  <a href="#booking" onClick={() => scrollToSection("booking")}>
+                    <u>Book</u>
+                  </a>
                 </li>
               </ul>
             </nav>
