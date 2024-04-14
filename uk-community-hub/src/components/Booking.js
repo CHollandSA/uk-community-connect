@@ -39,6 +39,7 @@ const Booking = () => {
         `http://localhost:8081/volunteers/${userId}`
       );
       const approvedSessions = response.data.filter(
+        // Filters the response data to include only approved sessions. Choosing to filter what is fetched was easier than writing a new sql statement
         (session) => session.approved === 1
       );
       setVolunteerSessions(approvedSessions);

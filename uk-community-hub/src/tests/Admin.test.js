@@ -1,7 +1,6 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import Admin from "../components/Admin";
-
 describe("Admin Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
