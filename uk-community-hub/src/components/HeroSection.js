@@ -27,7 +27,6 @@ export default function HeroSection() {
       </Popover.Body>
     </Popover>
   );
-  const [showPurpose, setShowPurpose] = useState(false); // State to manage visibility
 
   // State variable to manage visibility of additional purpose info
   const [showPurpose, setShowPurpose] = useState(false);
